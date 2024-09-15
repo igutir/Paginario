@@ -2,47 +2,42 @@ from django.db import models
 
 # Create your models here.
 class Usuario(models.Model):
-    id = models.IntegerField()
-    nombre = models.CharField(max_length=100)
-    fecha_nacimiento = models.DateField()
-    fecha_registro = models.DateField()
+    nombre = models.CharField(max_length=100, null=False)
+    email = models.EmailField(unique=True)
+    fecha_nacimiento = models.DateField(null=False)
+    fecha_registro = models.DateField(null=False)
 
     def __str__(self):
         return str(self.nombre)
 
 class Estado_Libro(models.Model):
-    id = models.IntegerField()
-    nombre = models.CharField(max_length=100)
+    nombre = models.CharField(max_length=100, null=False)
 
     def __str__(self):
         return str(self.nombre)
 
 class Genero_Literario(models.Model):
-    id = models.IntegerField()
-    nombre = models.CharField(max_length=100)
+    nombre = models.CharField(max_length=100, null=False)
 
     def __str__(self):
         return str(self.nombre)
 
 class Autor(models.Model):
-    id = models.IntegerField()
-    nombre = models.CharField(max_length=100)
+    nombre = models.CharField(max_length=100, null=False)
 
     def __str__(self):
         return str(self.nombre)
 
 class Editorial(models.Model):
-    id = models.IntegerField()
-    nombre = models.CharField(max_length=100)
+    nombre = models.CharField(max_length=100, null=False)
 
     def __str__(self):
         return str(self.nombre)
 
 class Libro(models.Model):
-    id = models.IntegerField()
-    nombre = models.CharField(max_length=100)
-    autor = models.IntegerField()
-    anio = models.IntegerField()
+    nombre = models.CharField(max_length=100, null=False)
+    autor = models.IntegerField(null=False)
+    anio = models.IntegerField(null=False)
     portada = models.ImageField(upload_to='covers/%Y/%m/%d', height_field=None, width_field=None, max_length=None)
     id_editorial = models.ForeignKey(Editorial, on_delete = models.CASCADE)
     id_autor = models.ForeignKey(Autor, on_delete = models.CASCADE)
@@ -51,8 +46,7 @@ class Libro(models.Model):
         return str(self.nombre)
 
 class Lista(models.Model):
-    id = models.IntegerField()
-    nombre = models.CharField(max_length=100)
+    nombre = models.CharField(max_length=100, null=False)
     id_usuario = models.ForeignKey(Usuario, on_delete = models.CASCADE)
     id_libro = models.ForeignKey(Libro, on_delete = models.CASCADE)
 
@@ -62,7 +56,7 @@ class Lista(models.Model):
 class Usuario_Libro(models.Model):
     id_usuario = models.ForeignKey(Usuario, on_delete = models.CASCADE)
     id_libro = models.ForeignKey(Libro, on_delete = models.CASCADE)
-    calificacion = models.IntegerField()
+    calificacion = models.IntegerField(null=True)
     resenia = models.TextField(null=True, blank=True)
     id_estado_libro = models.ForeignKey(Estado_Libro, on_delete = models.CASCADE)
 
