@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -77,11 +78,12 @@ WSGI_APPLICATION = 'Paginario.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE':'django.db.backends.oracle',
+        'NAME':'portafoliog3_high',
+        'USER':'ADM_PAGINARIO', 
+        'PASSWORD':'PortafolioG3',#Please provide the db password here
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -105,9 +107,23 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'UTC'
+
+DATE_FORMAT = "d/m/Y"
+
+DATETIME_FORMAT = [
+    "d/m/Y H:i",
+    "d/m/Y H:i:s"
+]
+
+DATETIME_INPUT_FORMATS = [
+    "%Y-%m-%d %H:%M:%S",  # '2006-10-25 14:30:59'
+    "%Y-%m-%d %H:%M",  # '2006-10-25 14:30'
+    "%d/%m/%Y %H:%M:%S",  # '25/10/2006 14:30:59'
+    "%d/%m/%Y %H:%M",  # '25/10/2006 14:30'
+]
 
 USE_I18N = True
 
