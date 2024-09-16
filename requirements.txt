@@ -1,5 +1,9 @@
 django
+djangorestframework
 gunicorn
 django-heroku
 django-environ
 requests
+pillow
+django-crispy-forms
+crispy-bootstrap5
