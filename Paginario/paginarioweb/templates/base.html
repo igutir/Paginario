@@ -72,28 +72,13 @@
                     </div>
                 </div>
             </nav>
-            <div class="container-fluid mt-4">
-                <div class="content-section bg-light py-4 px-3">
-                    <h5 class="text-light-gray">Agregados Recientemente</h5>
-                    <div class="row bg-dark-blue p-3 rounded-3">
-                        <!-- Placeholder boxes -->
-                        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
-                            <div class="card bg-secondary" style="height: 150px;"></div>
-                        </div>
-                        <!-- Repeat for more cards -->
-                    </div>
-                </div>
-                <div class="content-section bg-light py-4 px-3 mt-4">
-                    <h5 class="text-light-gray">Más Populares</h5>
-                    <div class="row bg-dark-blue p-3 rounded-3">
-                        <!-- Placeholder boxes -->
-                        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
-                            <div class="card bg-secondary" style="height: 150px;"></div>
-                        </div>
-                        <!-- Repeat for more cards -->
-                    </div>
-                </div>
-            </div>
+
+            {% block contenido %}
+
+            {% comment %} Contenido de los otros templates {% endcomment %}
+
+            {% endblock %}
+
         </div>
     </div>
 
