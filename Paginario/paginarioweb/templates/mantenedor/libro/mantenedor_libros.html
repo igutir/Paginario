@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block contenido %}
+
+<div class="d-flex justify-content-center m-4 ps-4">
+    <h1>
+        Mantenedor de Libros
+    </h1>
+</div>
+
+<div class="d-flex justify-content-center">
+    <div class="row g-4">
+
+        <div class="col-6 mt-3" align="center">
+            <div class="card h-100" style="width: 200px;">
+                <a href="{% url 'agregar_libro' %}" title="add list icons">
+                    <img src="{% static 'img/icon-add-100.png'%}" class="card-img-top m-3" alt="..." style="width: 100px;">
+                </a>
+                <div class="card-body">
+                    <h6 class="card-title">Ingresar Libros</h6>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 mt-3" align="center">
+            <div class="card h-100" style="width: 200px;">
+                <a href="{% url 'modificar_libro_lista' %}" title="add list icons">
+                    <img src="{% static 'img/icon-edit-100.png'%}" class="card-img-top m-3" alt="..." style="width: 100px;">
+                </a>
+                <div class="card-body">
+                    <h6 class="card-title">Actualizar/Eliminar Libros</h6>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

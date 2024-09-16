@@ -15,14 +15,10 @@ import os
 import environ
 import django_heroku
 
-
-
-
 # Inicializa las variables de entorno
 root = environ.Path(__file__) - 3  # get root of the project
 env = environ.Env()
 env.read_env() # Asegúrate de tener el archivo .env
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -51,7 +47,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'paginarioweb',
+    'crispy_forms',
+    'crispy_bootstrap5',
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -91,7 +91,7 @@ DATABASES = {
     'default': {
         'ENGINE':'django.db.backends.oracle',
         'NAME':'portafoliog3_high',
-        'USER':'ADM_PAGINARIO', 
+        'USER':'ADM_PAGINARIO',
         'PASSWORD':'PortafolioG3',#Please provide the db password here
     }
 }
@@ -154,3 +154,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Configuración para Heroku (si aplica)
 django_heroku.settings(locals())
+
+MEDIA_URL = '/files/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "files")
