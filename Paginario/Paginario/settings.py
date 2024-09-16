@@ -11,16 +11,29 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+import environ
+import django_heroku
+
+
+
+
+# Inicializa las variables de entorno
+root = environ.Path(__file__) - 3  # get root of the project
+env = environ.Env()
+env.read_env() # Asegúrate de tener el archivo .env
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ic1k4u-v337w^zgbc5y+ikh#@pduos5v^m@cmc8vjuf^27jtgk'
+SECRET_KEY = env.str('SECRET_KEY')  # Clave secreta tomada del archivo .env
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'paginarioweb',
 ]
 
 MIDDLEWARE = [
@@ -54,7 +68,7 @@ ROOT_URLCONF = 'Paginario.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'paginarioweb/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,11 +89,12 @@ WSGI_APPLICATION = 'Paginario.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE':'django.db.backends.oracle',
+        'NAME':'portafoliog3_high',
+        'USER':'ADM_PAGINARIO', 
+        'PASSWORD':'PortafolioG3',#Please provide the db password here
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -103,9 +118,23 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'UTC'
+
+DATE_FORMAT = "d/m/Y"
+
+DATETIME_FORMAT = [
+    "d/m/Y H:i",
+    "d/m/Y H:i:s"
+]
+
+DATETIME_INPUT_FORMATS = [
+    "%Y-%m-%d %H:%M:%S",  # '2006-10-25 14:30:59'
+    "%Y-%m-%d %H:%M",  # '2006-10-25 14:30'
+    "%d/%m/%Y %H:%M:%S",  # '25/10/2006 14:30:59'
+    "%d/%m/%Y %H:%M",  # '25/10/2006 14:30'
+]
 
 USE_I18N = True
 
@@ -116,8 +145,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILE_DIRS= (os.path.join(BASE_DIR, 'paginarioweb/static'),)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Configuración para Heroku (si aplica)
+django_heroku.settings(locals())

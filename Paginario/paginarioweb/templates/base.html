@@ -1,0 +1,120 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PaginarioApp</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{% static '/css/style-base.css' %}">
+</head>
+
+<body class="bg-light-gray">
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <div class="bg-dark border-right" id="sidebar-wrapper">
+            <div class="sidebar-heading text-light py-4 px-3">
+                <i class="bi bi-book" style="font-size: 1.5rem;"></i> PaginarioApp
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item list-group-item-action bg-dark text-light d-flex align-items-center">
+                    <i class="bi bi-house-door me-2"></i> Home
+                </li>
+                <li class="list-group-item list-group-item-action bg-dark text-light d-flex align-items-center">
+                    <i class="bi bi-person me-2"></i> Perfil
+                </li>
+                <li class="list-group-item list-group-item-action bg-dark text-light d-flex align-items-center">
+                    <i class="bi bi-search me-2"></i> Buscar
+                </li>
+                <li class="list-group-item list-group-item-action bg-dark text-light d-flex align-items-center">
+                    <i class="bi bi-bookmark me-2"></i> Por Leer
+                </li>
+                <li class="list-group-item list-group-item-action bg-dark text-light d-flex align-items-center">
+                    <i class="bi bi-star me-2"></i> Favoritos
+                </li>
+                <li class="list-group-item list-group-item-action bg-dark text-light d-flex align-items-center">
+                    <i class="bi bi-list-task me-2"></i> Listas
+                </li>
+                <li class="list-group-item list-group-item-action bg-dark text-light d-flex align-items-center">
+                    <i class="bi bi-journal me-2"></i> Diario
+                </li>
+                <li class="list-group-item list-group-item-action bg-dark text-light d-flex align-items-center">
+                    <i class="bi bi-chat-left-text me-2"></i> Reseñas
+                </li>
+                <li class="list-group-item list-group-item-action bg-dark text-light d-flex align-items-center">
+                    <i class="bi bi-graph-up-arrow me-2"></i> Actividad
+                </li>
+                <li class="list-group-item list-group-item-action bg-dark text-light d-flex align-items-center">
+                    <i class="bi bi-box-arrow-left me-2"></i> Cerrar Sesión
+                </li>
+                <li class="list-group-item list-group-item-action bg-dark text-light d-flex align-items-center">
+                    <i class="bi bi-gear me-2"></i> Settings
+                </li>
+                <li class="list-group-item list-group-item-action bg-dark text-light d-flex align-items-center">
+                    <i class="bi bi-question-circle me-2"></i> Help Center
+                </li>
+            </ul>
+        </div>
+        <!-- Page Content -->
+        <div id="page-content-wrapper" class="bg-white">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <button class="btn btn-primary" id="menu-toggle"><i class="bi bi-chevron-left"></i></button>
+                <form class="d-flex mx-auto" style="max-width: 600px;" action="{% url 'librosbuscar' %}" method="GET">
+                    {% csrf_token %}
+                    <input class="form-control me-2" type="search" placeholder="Buscar libro" name="search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+                <div class="navbar-nav ms-auto">
+                    <div class="nav-item d-flex align-items-center">
+                        <img src="https://via.placeholder.com/40" alt="User photo" class="rounded-circle me-2">
+                        <div class="d-flex flex-column">
+                            <span>Nischal Gautam</span>
+                            <small class="text-muted">Super Admin</small>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <div class="container-fluid mt-4">
+                <div class="content-section bg-light py-4 px-3">
+                    <h5 class="text-light-gray">Agregados Recientemente</h5>
+                    <div class="row bg-dark-blue p-3 rounded-3">
+                        <!-- Placeholder boxes -->
+                        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                            <div class="card bg-secondary" style="height: 150px;"></div>
+                        </div>
+                        <!-- Repeat for more cards -->
+                    </div>
+                </div>
+                <div class="content-section bg-light py-4 px-3 mt-4">
+                    <h5 class="text-light-gray">Más Populares</h5>
+                    <div class="row bg-dark-blue p-3 rounded-3">
+                        <!-- Placeholder boxes -->
+                        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                            <div class="card bg-secondary" style="height: 150px;"></div>
+                        </div>
+                        <!-- Repeat for more cards -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
+    <script>
+        // Toggle sidebar
+        document.getElementById("menu-toggle").addEventListener("click", function () {
+            let wrapper = document.getElementById("wrapper");
+            wrapper.classList.toggle("toggled");
+        });
+    </script>
+</body>
+
+</html>
+
+
