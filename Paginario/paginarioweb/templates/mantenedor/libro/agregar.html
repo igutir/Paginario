@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block contenido %}
+
+<div class="d-flex justify-content-center m-4 ps-4">
+    <h1>
+        Agregar Libro
+    </h1>
+</div>
+
+<div class = "d-flex justify-content-center">
+    <div class = "row">
+        <form class = "col-12 col-sm-12 col-lg-12" id = "agregarLibro" action = "" method = "POST" enctype = "multipart/form-data">
+            {% csrf_token %}
+            {{form_libro | crispy}}
+            <hr class="my-4">
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-primary m-2">Agregar libro</button>
+                <button type="reset" class="btn btn-danger m-2">Limpiar campos</button>
+            </div>
+        </form>
+        <hr class="my-4">
+        <h3 class="m-3"> Resultado: {{mensaje}} </h3>
+    </div>
+</div>
+
+{% endblock %}
