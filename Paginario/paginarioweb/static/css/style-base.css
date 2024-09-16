@@ -1,0 +1,98 @@
+body {
+    overflow-x: hidden;
+}
+
+.bg-light-gray {
+    background-color: #f0f0f0; /* Fondo gris */
+}
+
+.bg-white {
+    background-color: #ffffff; /* Fondo blanco */
+}
+
+.bg-dark-blue {
+    background-color: #1b2e4b; /* Fondo azul para los contenedores */
+}
+
+.text-light-gray {
+    color: #6c757d; /* Texto gris claro */
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: -250px;
+}
+
+#sidebar-wrapper {
+    min-height: 100vh;
+    width: 250px;
+    margin-left: 0;
+    transition: margin 0.25s ease-out;
+}
+
+#page-content-wrapper {
+    width: 100%;
+}
+
+.sidebar-heading {
+    padding: 1rem;
+    font-size: 1.3rem;
+    text-align: center;
+    background-color: #212529;
+}
+
+.list-group-item {
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+    border: none;
+    color: #fff;
+}
+
+.list-group-item i {
+    font-size: 1.2rem;
+}
+
+.list-group-item:hover, .list-group-item:focus {
+    background-color: #ffffff;
+    color: #007bff; /* Cambia el texto y el ícono a azul */
+}
+
+.list-group-item:hover i, .list-group-item:focus i {
+    color: #007bff; /* Cambia el ícono a azul */
+}
+
+.card {
+    background-color: #e0e0e0;
+    border-radius: 10px;
+}
+
+.nav-item div {
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar {
+    padding: 0.75rem 1.5rem;
+}
+
+input.form-control {
+    max-width: 600px;
+}
+
+input.form-control:focus {
+    box-shadow: none;
+    border-color: #ced4da;
+}
+
+.content-section {
+    background-color: #f0f0f0; /* Fondo gris claro */
+}
+
+.row {
+    background-color: #1b2e4b; /* Contenedores azules */
+    border-radius: 10px;
+    padding: 1rem;
+}
+
+h5 {
+    margin-bottom: 1rem;
+}
