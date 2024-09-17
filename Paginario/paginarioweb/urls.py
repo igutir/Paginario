@@ -7,7 +7,7 @@ from .views import libro, mantenedor_libros, agregar_libro, modificar_libro_list
 urlpatterns = [
     path('', home, name='home'),
     path('home/', home, name='home'),
-    path('base/', base, name='base'),
+    # path('base/', base, name='base'),
 
     path('librosbuscar/', books, name='librosbuscar'),
 
