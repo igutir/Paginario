@@ -27,7 +27,13 @@ def books(request):
     if not search:
         return redirect('/')
 
-    queries = {'q': search, 'key': key}
+    queries = {
+        'q': f'intitle:{search}',  # Solo buscar en títulos
+        'key': key,
+        'maxResults': 10,  # Número de resultados por página
+        'startIndex': start_index  # Índice de inicio para la paginación
+        }
+
     print(queries)
     r = requests.get('https://www.googleapis.com/books/v1/volumes', params=queries)
     print(r)
