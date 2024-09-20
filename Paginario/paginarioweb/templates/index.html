@@ -68,15 +68,28 @@
                         <i class="bi bi-search"></i>
                     </button>
                 </form>
+
+                {% if user.is_authenticated %}
                 <div class="navbar-nav ms-auto">
                     <div class="nav-item d-flex align-items-center">
                         <img src="https://via.placeholder.com/40" alt="User photo" class="rounded-circle me-2">
                         <div class="d-flex flex-column">
-                            <span>Nischal Gautam</span>
+                            {% if user.is_authenticated %}
+                            <span>{{ user.username }}</span>
                             <small class="text-muted">Super Admin</small>
                         </div>
+                        <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
                     </div>
                 </div>
+
+                {% else %}
+
+                <div class="navbar-nav ms-auto">
+                    <div class="nav-item d-flex align-items-center">
+                        <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+                    </div>
+                </div>
+                {% endif %}
             </nav>
             <div class="container-fluid mt-4">
               <div class="content-section bg-light py-4 px-3">

@@ -1,4 +1,5 @@
-from django.urls import path
+from django.urls import path, include
+from django.contrib.auth import views as auth_views
 from .views import home
 from .views import base
 from .views import books
@@ -9,7 +10,11 @@ urlpatterns = [
     path('home/', home, name='home'),
     # path('base/', base, name='base'),
 
+    path('accounts/', include('django.contrib.auth.urls')),
+
     path('librosbuscar/', books, name='librosbuscar'),
+
+
 
     # Mantenedor de Administradores:
     path('j/<int:id>/', libro, name="libro"),
