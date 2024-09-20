@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block contenido %}
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+
+<script>
+    function submitUserForm() {
+        var response = grecaptcha.getResponse();
+        console.log(response.length);
+        if (response.length == 0) {
+            document.getElementById('g-recaptcha-error').innerHTML = '<span style="color:red;">Problema con el captcha, inténtelo de nuevo</span>';
+            return false;
+        }
+        return true;
+    }
+
+    function verifyCaptcha() {
+        console.log('verified');
+        document.getElementById('g-recaptcha-error').innerHTML = '';
+    }
+</script>
+
+
+<div class="d-flex justify-content-center m-4 ps-4">
+    <h1>
+        Iniciar Sesi&oacute;n
+    </h1>
+</div>
+
+
+<div class="d-flex justify-content-center">
+    <div class="row">
+        <form class="col-12 col-sm-12 col-lg-12" id="login" action="" method="POST" onsubmit="return submitUserForm();">
+            {% csrf_token %}
+            {{form | crispy}}
+
+            <div class="d-flex justify-content-center">
+                <p><a href="{% url 'password_reset' %}" class="link-underline-primary">Olvid&eacute; mi contraseña</a>
+                </p>
+            </div>
+
+            <hr class="m-2">
+
+            <!-- Guardo la clave secreta aqui. No robar. 6LeWkGsoAAAAAGEsCZQrr-Dq_hXgIJPmmrDaUZeg-->
+            <div class="d-flex justify-content-center">
+                <div class="col-12">
+                    <div class="g-recaptcha" data-sitekey="6LeWkGsoAAAAAM0MB_s7-vQBaV89X9NgRbkCy_fY" data-callback="verifyCaptcha" align="center">
+                    </div>
+                    <div id="g-recaptcha-error">
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center mt-3">
+                <a href="{% url 'home' %}" class="btn btn-secondary m-2">Atrás</a>
+                <button type="submit" class="btn btn-primary m-2">Iniciar Sesion</button>
+            </div>
+        </form>
+        <hr class="my-4">
+
+    </div>
+</div>
+
+{% endblock %}
