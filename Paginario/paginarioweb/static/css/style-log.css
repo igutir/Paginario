@@ -1,0 +1,122 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: #f5f5f5;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    background-color: #fff;
+}
+
+.left-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 50%;
+    background-image: url('../img/login-register.png'); /* Añade la imagen de fondo */
+    background-size: cover;
+    background-position: center;
+}
+.left-section img{
+    width: 40px;
+}
+
+.left-section p{
+    color: white;
+    font-size: 25px;
+    margin-left: 1rem;
+}
+
+.right-section {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.login-box {
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-box h2 {
+    font-size: 24px;
+    color: #111827;
+    margin-bottom: 10px;
+}
+
+.login-box p {
+    color: #6B7280;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    border: 1px solid #edeef0;
+    border-radius: 8px;
+    padding: 10px 15px;
+    background-color: #F9FAFB;
+}
+
+.input-group input {
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #F9FAFB;
+}
+
+.input-icon {
+    margin-right: 10px;
+    color: #6B7280;
+    font-size: 18px;
+}
+
+button {
+    width: 100%;
+    background-color: #1D4ED8;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+button:hover {
+    background-color: #2563EB;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.footer a {
+    text-decoration: none;
+    color: #6B7280;
+    font-size: 14px;
+}
+
+.footer .forgot-password {
+    color: #2563EB;
+}

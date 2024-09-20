@@ -18,8 +18,8 @@ key = env.str('API_KEY')
 def home(request):
     return render(request, "index.html")
 
-def base(request):
-    return render(request, "base.html")
+def log(request):
+    return render(request, "registration/log.html")
 
 def books(request):
     search = request.GET.get('search', False)

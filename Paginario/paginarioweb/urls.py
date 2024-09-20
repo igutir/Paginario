@@ -1,14 +1,14 @@
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from .views import home
-from .views import base
+from .views import log
 from .views import books
 from .views import libro, mantenedor_libros, agregar_libro, modificar_libro_lista, modificar_libro, eliminar_libro
 
 urlpatterns = [
     path('', home, name='home'),
     path('home/', home, name='home'),
-    # path('base/', base, name='base'),
+    path('log/', log, name='log'),
 
     path('accounts/', include('django.contrib.auth.urls')),
 
