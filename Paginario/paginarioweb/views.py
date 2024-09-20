@@ -24,6 +24,9 @@ def base(request):
 def books(request):
     search = request.GET.get('search', False)
 
+    start_index = int(request.GET.get('start', 0))  # Paginación: inicio en 0
+
+
     if not search:
         return redirect('/')
 
@@ -33,24 +36,24 @@ def books(request):
         'maxResults': 10,  # Número de resultados por página
         'startIndex': start_index  # Índice de inicio para la paginación
         }
-
+    
     print(queries)
     r = requests.get('https://www.googleapis.com/books/v1/volumes', params=queries)
     print(r)
     if r.status_code != 200:
-        return render(request, 'paginarioweb/librosbuscar.html', {'message': 'Sorry, there seems to be an issue with Google Books right now.'})
+        return render(request, 'librosbuscar.html', {'message': 'Sorry, there seems to be an issue with Google Books right now.'})
 
     data = r.json()
 
     if not 'items' in data:
-        return render(request, 'paginarioweb/librosbuscar.html', {'message': 'Sorry, no books match that search term.'})
+        return render(request, 'librosbuscar.html', {'message': 'Sorry, no books match that search term.'})
 
     fetched_books = data['items']
     books = []
     for book in fetched_books:
         book_dict = {
             'title': book['volumeInfo']['title'],
-            'image': book['volumeInfo']['imageLinks']['thumbnail'] if 'imageLinks' in book['volumeInfo'] else "",
+            'image': book['volumeInfo']['imageLinks']['thumbnail'] if 'imageLinks' in book['volumeInfo'] else "/static/img/default-thumbnail.jpg",
             'authors': ", ".join(book['volumeInfo']['authors']) if 'authors' in book['volumeInfo'] else "",
             'publisher': book['volumeInfo']['publisher'] if 'publisher' in book['volumeInfo'] else "",
             'info': book['volumeInfo']['infoLink'],
@@ -63,7 +66,15 @@ def books(request):
 
     books.sort(reverse=True, key=sort_by_pop)
 
-    return render(request, 'librosbuscar.html', {'books': books})
+
+    total_items = data.get('totalItems', 0)
+    next_index = start_index + 10 if start_index + 10 < total_items else None   # Calcular el índice de la próxima página
+
+    return render(request, 'librosbuscar.html', {
+        'books': books,
+        'search': search,  # Mantener la búsqueda
+        'next_index': next_index  # Pasar el valor para la paginación
+        })
 
 
 #def books(request):
@@ -200,7 +211,3 @@ def eliminar_libro(idlibro):
     libro.delete()
 
     return redirect(to = "modificar_libro_lista")
-
-
-
-
