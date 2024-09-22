@@ -1,17 +1,20 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
 from django.db import IntegrityError, transaction
 
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User, Group
+from django.contrib.auth.decorators import login_required, permission_required
 
 from .forms import FomrularioLibro, BookSearch
 from .models import Libro, Usuario, Usuario_Genero_Literario
 
 from string import Template
 
+import traceback
 import requests
 import environ
+import datetime
 
 env = environ.Env()
 env.read_env()  # reading .env file
@@ -21,20 +24,18 @@ key = env.str('API_KEY')
 def home(request):
     return render(request, "index.html")
 
-def register(request):
-    return render(request, "registration/register.html")
+#def register(request):
+#   return render(request, "registration/register.html")
 
-def registrar_usuario(request):
+def register(request):
 
     data = {
         "mensaje": ""
     }
 
     if request.method == "POST":
-        nombre = request.POST.get("nombre")
         username = request.POST.get("username")
         email = request.POST.get("email")
-        fecha_nacimiento = request.POST.get("fecha_nacimiento")
         password = request.POST.get("password")
 
         usuario = User()
@@ -47,20 +48,29 @@ def registrar_usuario(request):
         usuario_Paginario = Usuario()
         usuario_Paginario.nombre = username
         usuario_Paginario.email = email
-        usuario_Paginario.fecha_registro = usuario.date_joined
+        usuario_Paginario.fecha_registro = datetime.datetime.now()
 
         try:
             with transaction.atomic():
                 usuario.save()
                 usuario.groups.add(grupo_User)
+                usuario_Paginario.user = usuario
                 usuario_Paginario.save()
 
                 data["mensaje"] = "Registro OK"
 
-        except IntegrityError:
-            data["mensaje"] = "Problema con el registro"
+                usuario = authenticate(username=usuario.username, password=password)
+                login(request, usuario)
 
-    return render(request, "registro.html")
+                print("OK")
+
+                return redirect(to="home")
+
+        except Exception as ex:
+            print("NOK")
+            print(traceback.format_exc())
+
+    return render(request, "registration/register.html")
 
 
 def books(request):
