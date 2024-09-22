@@ -1,10 +1,11 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Usuario(models.Model):
+    user = models.OneToOneField(User, null=False, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=100, null=False)
     email = models.EmailField(unique=True)
-    fecha_nacimiento = models.DateField(null=False)
     fecha_registro = models.DateField(null=False)
 
     def __str__(self):
@@ -35,8 +36,9 @@ class Editorial(models.Model):
         return str(self.nombre)
 
 class Libro(models.Model):
+    id = models.CharField(max_length=15, primary_key=True)
     nombre = models.CharField(max_length=100, null=False)
-    autor = models.IntegerField(null=False)
+    descripcion = models.TextField(null=True)
     anio = models.IntegerField(null=False)
     portada = models.ImageField(upload_to='covers/%Y/%m/%d', height_field=None, width_field=None, max_length=None)
     id_editorial = models.ForeignKey(Editorial, on_delete = models.CASCADE)

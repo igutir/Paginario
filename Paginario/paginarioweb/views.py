@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
+from django.db import IntegrityError, transaction
+
+from django.contrib.auth.models import User, Group
 
 from .forms import FomrularioLibro, BookSearch
-from .models import Libro
+from .models import Libro, Usuario, Usuario_Genero_Literario
 
 from string import Template
 
@@ -21,6 +24,45 @@ def home(request):
 def log(request):
     return render(request, "registration/log.html")
 
+def registrar_usuario(request):
+
+    data = {
+        "mensaje": ""
+    }
+
+    if request.method == "POST":
+        nombre = request.POST.get("nombre")
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        fecha_nacimiento = request.POST.get("fecha_nacimiento")
+        password = request.POST.get("password")
+
+        usuario = User()
+        usuario.username = username
+        usuario.set_password(password)
+        usuario.email = email
+
+        grupo_User = Group.objects.get(name="usuario")
+
+        usuario_Paginario = Usuario()
+        usuario_Paginario.nombre = username
+        usuario_Paginario.email = email
+        usuario_Paginario.fecha_registro = usuario.date_joined
+
+        try:
+            with transaction.atomic():
+                usuario.save()
+                usuario.groups.add(grupo_User)
+                usuario_Paginario.save()
+
+                data["mensaje"] = "Registro OK"
+
+        except IntegrityError:
+            data["mensaje"] = "Problema con el registro"
+
+    return render(request, "registro.html")
+
+
 def books(request):
     search = request.GET.get('search', False)
 
@@ -36,7 +78,7 @@ def books(request):
         'maxResults': 10,  # Número de resultados por página
         'startIndex': start_index  # Índice de inicio para la paginación
         }
-    
+
     print(queries)
     r = requests.get('https://www.googleapis.com/books/v1/volumes', params=queries)
     print(r)
@@ -211,3 +253,57 @@ def eliminar_libro(idlibro):
     libro.delete()
 
     return redirect(to = "modificar_libro_lista")
+
+
+# Metodo para poblar la BD con ayuda de la API Google Books:
+
+def libros_mantenedor(request):
+
+    search = request.GET.get('search', False)
+
+    start_index = int(request.GET.get('start', 0))  # Paginación: inicio en 0
+
+    if not search:
+        return redirect('/mantenedor/agregar_libro/')
+
+    queries = {
+        'q': f'intitle:{search}',  # Solo buscar en títulos
+        'key': key,
+        'maxResults': 10,  # Número de resultados por página
+        'startIndex': start_index  # Índice de inicio para la paginación
+        }
+
+    print(queries)
+    r = requests.get('https://www.googleapis.com/books/v1/volumes', params=queries)
+    print(r)
+    if r.status_code != 200:
+        return render(request, 'mantenedor/libro/listar_libros_api.html', {'message': 'Sorry, there seems to be an issue with Google Books right now.'})
+
+    data = r.json()
+
+    if not 'items' in data:
+        return render(request, 'mantenedor/libro/listar_libros_api.html', {'message': 'Sorry, no books match that search term.'})
+
+    fetched_books = data['items']
+    libros = []
+    for book in fetched_books:
+        book_dict = {
+            'id': book['id'],
+            'nombre': book['volumeInfo']['title'],
+            'descripcion': book['volumeInfo']['description'] if 'description' in book['volumeInfo'] else "",
+            'anio': book['volumeInfo']['publishedDate'],
+            'autor': book['volumeInfo']['authors'][0] if 'authors' in book['volumeInfo'] else "",
+            'imagen': book['volumeInfo']['imageLinks']['thumbnail'] if 'imageLinks' in book['volumeInfo'] else "/static/img/default-thumbnail.jpg",
+        }
+        libros.append(book_dict)
+
+    total_items = data.get('totalItems', 0)
+    next_index = start_index + 10 if start_index + 10 < total_items else None   # Calcular el índice de la próxima página
+
+    print(libros)
+
+    return render(request, 'mantenedor/libro/listar_libros_api.html', {
+        'libros': libros,
+        'search': search,  # Mantener la búsqueda
+        'next_index': next_index  # Pasar el valor para la paginación
+        })

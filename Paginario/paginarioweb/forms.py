@@ -1,10 +1,15 @@
 from django import forms
-from .models import Libro
+from .models import Libro, Autor
 
 class FomrularioLibro(forms.ModelForm):
     class Meta:
         model = Libro
-        fields = "__all__"
+        fields = ('nombre','anio', 'portada', 'id_autor', 'id_editorial')
+
+class FomrularioAutor(forms.ModelForm):
+    class Meta:
+        model = Autor
+        fields = ('nombre',)
 
 class BookSearch(forms.Form):
     search = forms.CharField(
