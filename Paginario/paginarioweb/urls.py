@@ -1,14 +1,19 @@
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from .views import home
-from .views import log
 from .views import books
+<<<<<<< HEAD
 from .views import libro, mantenedor_libros, agregar_libro, modificar_libro_lista, modificar_libro, eliminar_libro, libros_mantenedor
+=======
+from .views import register
+from .views import libro, mantenedor_libros, agregar_libro, modificar_libro_lista, modificar_libro, eliminar_libro
+>>>>>>> origin/camicodecr
 
 urlpatterns = [
-    path('', home, name='home'),
+    # path('', home, name='home'),
+    path('', auth_views.LoginView.as_view(), name='login'),
     path('home/', home, name='home'),
-    path('log/', log, name='log'),
+    path('register/', register, name='register'),
 
     path('accounts/', include('django.contrib.auth.urls')),
 
