@@ -154,12 +154,12 @@ def mantenedor_libros(request):
 def agregar_libro(request):
 
     data = {
-        "form_libro": FomrularioLibro,
+        "form_libro": FormularioLibro,
         "mensaje": ""
     }
 
     if request.method == "POST":
-        formulario = FomrularioLibro(data = request.POST, files = request.FILES)
+        formulario = FormularioLibro(data = request.POST, files = request.FILES)
 
         if formulario.is_valid:
             formulario.save()
@@ -192,11 +192,11 @@ def modificar_libro(request, idlibro):
     libro = get_object_or_404(Libro, id = idlibro)
 
     data = {
-        "form_libro": FomrularioLibro(instance = libro)
+        "form_libro": FormularioLibro(instance = libro)
     }
 
     if request.method == "POST":
-        formulario = FomrularioLibro(data = request.POST, instance = libro, files = request.FILES)
+        formulario = FormularioLibro(data = request.POST, instance = libro, files = request.FILES)
 
         if formulario.is_valid:
             formulario.save()
@@ -211,7 +211,7 @@ def modificar_libro(request, idlibro):
 @login_required(login_url="login/")
 @permission_required(['Paginario.delete_libro'], login_url = "login/")
 """
-def eliminar_libro(idlibro):
+def eliminar_libro(request, idlibro):
 
     libro = get_object_or_404(Libro, id = idlibro)
 

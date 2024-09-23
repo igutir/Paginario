@@ -45,12 +45,12 @@ function eliminarLibro(id){
             <tr>
                 <th>{{ libro.id }}</th>
                 <td>{{ libro.nombre }}</td>
-                <td>{{ libro.autor }}</td>
+                <td class="text-truncate" style="max-width: 300px;">{{ libro.descripcion }}</td>
                 <td>{{ libro.anio }}</td>
-                <td> Otra </td>
-                <td>{{ libro.autor }}</td>
+                <td>{{ libro.id_editorial.nombre }}</td>
+                <td>{{ libro.id_autor.nombre }}</td>
                 <td align="center"><a href="{% url 'modificar_libro' idlibro=libro.id %}" class="btn btn-warning">M</a></td>
-                <td align="center"><a href="#" onclick="eliminarLibro('{{ libro.id }}')" class="btn btn-danger">E</a></td>
+                <td align="center"><a href="{% url 'eliminar_libro' idlibro=libro.id %}" class="btn btn-danger">E</a></td>
             </tr>
             {% endfor %}
         </tbody>
