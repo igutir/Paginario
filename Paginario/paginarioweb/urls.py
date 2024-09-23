@@ -3,6 +3,7 @@ from django.contrib.auth import views as auth_views
 from .views import home
 #from .views import log
 from .views import books
+from .views import vista_libro
 from .views import register
 from .views import libro, mantenedor_libros, agregar_libro, modificar_libro_lista, modificar_libro, eliminar_libro, libros_mantenedor
 
@@ -11,6 +12,7 @@ urlpatterns = [
     path('', auth_views.LoginView.as_view(), name='login'),
     path('home/', home, name='home'),
     path('register/', register, name='register'),
+    path('libro/', vista_libro, name='vista_libro'),
 
     path('accounts/', include('django.contrib.auth.urls')),
 

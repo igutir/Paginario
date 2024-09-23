@@ -24,8 +24,9 @@ key = env.str('API_KEY')
 def home(request):
     return render(request, "index.html")
 
-#def register(request):
-#   return render(request, "registration/register.html")
+def vista_libro(request):
+    return render(request, "libro.html")
+
 
 def register(request):
 

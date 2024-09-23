@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+
+<div class="book-container">
+    <div class="book-details">
+        <div class="book-image">
+            <img src="book-placeholder.png" alt="Imagen del libro">
+        </div>
+        <div class="book-info">
+            <p class="year-author"><span>Año</span> · <span>Autor</span></p>
+            <h1 class="book-title">Título</h1>
+            <div class="categories">
+                <span class="category">Categoría</span>
+                <span class="category">Categoría</span>
+            </div>
+            <p class="isbn">ISBN 9789564085937</p>
+            <div class="book-icons">
+                <i class="fas fa-heart icon" onclick="toggleFavorite(this)"></i>
+                <i class="fas fa-bookmark icon"></i>
+                <i class="fas fa-list icon"></i>
+            </div>
+        </div>
+        <div class="book-description">
+            <p>Breve descripción del libro</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sagittis, justo ac consequat feugiat, ipsum nisi porttitor dolor, sit amet pretium ante neque porta augue...</p>
+        </div>
+    </div>
+
+    <div class="reviews">
+        <h2>RESEÑAS</h2>
+        <div class="review">
+            <div class="user-avatar"></div>
+            <div class="review-content">
+                <p class="review-author">NOMBRE</p>
+                <p class="review-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sagittis, justo ac consequat feugiat, ipsum nisi porttitor dolor...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleFavorite(icon) {
+        if (icon.classList.contains('active')) {
+            icon.classList.remove('active');
+            // Aquí puedes añadir la lógica para eliminar el libro de favoritos
+            console.log("Libro eliminado de favoritos");
+        } else {
+            icon.classList.add('active');
+            // Aquí puedes añadir la lógica para agregar el libro a favoritos
+            console.log("Libro agregado a favoritos");
+        }
+    }
+</script>
+
+{% endblock %}
+
+
