@@ -34,8 +34,8 @@ function eliminarLibro(id){
                 <th scope="col">Nombre</th>
                 <th scope="col">Autor</th>
                 <th scope="col">Año</th>
-                <th scope="col">ID Editorial</th>
-                <th scope="col">ID Autor</th>
+                <th scope="col">Editorial</th>
+                <th scope="col">Autor</th>
                 <th scope="col">Modificar</th>
                 <th scope="col">Eliminar</th>
             </tr>
@@ -47,8 +47,8 @@ function eliminarLibro(id){
                 <td>{{ libro.nombre }}</td>
                 <td>{{ libro.autor }}</td>
                 <td>{{ libro.anio }}</td>
-                <td>{{ libro.id_editorial }}</td>
-                <td>{{ libro.id_autor }}</td>
+                <td> Otra </td>
+                <td>{{ libro.autor }}</td>
                 <td align="center"><a href="{% url 'modificar_libro' idlibro=libro.id %}" class="btn btn-warning">M</a></td>
                 <td align="center"><a href="#" onclick="eliminarLibro('{{ libro.id }}')" class="btn btn-danger">E</a></td>
             </tr>

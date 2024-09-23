@@ -83,7 +83,7 @@
                 </div>
             </nav>
 
-            {% if libros_mantenedor %}
+            {% if libros %}
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -97,20 +97,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for libro in libros_mantenedor %}
+                    {% for libro in libros %}
                     <tr>
                         <th>{{ libro.id }}</th>
                         <td>{{ libro.nombre }}</td>
-                        <td>{{ libro.descripcion }}</td>
+                        <td class="text-truncate" style="max-width: 300px;">{{ libro.descripcion }}</td>
                         <td>{{ libro.anio }}</td>
                         <td>{{ libro.id_editorial }}</td>
-                        <td>{{ libro.id_autor }}</td>
-                        <td align="center"><a href="{% url 'modificar_libro' idlibro=libro.id %}" class="btn btn-warning">M</a></td>
-                        <td align="center"><a href="#" onclick="eliminarLibro('{{ libro.id }}')" class="btn btn-danger">E</a></td>
+                        <td>{{ libro.autor }}</td>
+                        <td align="center"><a href="{% url 'guardar_libro' id_libro=libro.id %}" class="btn btn-success">+</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
-                </table>
+            </table>
 
                 {% if next_index %}
 
