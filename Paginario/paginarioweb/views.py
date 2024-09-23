@@ -6,15 +6,13 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required, permission_required
 
-from .forms import FomrularioLibro, BookSearch
-from .models import Libro, Usuario, Usuario_Genero_Literario
+from .forms import FormularioLibro, BookSearch
+from .models import Libro, Usuario, Autor, Editorial, Usuario_Genero_Literario
 
 from string import Template
 
-import traceback
-import requests
-import environ
-import datetime
+import json, traceback, requests, environ, datetime
+
 
 env = environ.Env()
 env.read_env()  # reading .env file
@@ -129,49 +127,6 @@ def books(request):
         'next_index': next_index  # Pasar el valor para la paginación
         })
 
-
-#def books(request):
-
-    author = request.GET.get('author', False)
-    search = author if request.GET.get(
-        'search', False) == "" else request.GET.get('search', False)
-
-    if (search == False and author == False) or (search == "" and author == ""):
-        return redirect('/')
-
-    queries = {'q': search, 'inauthor': author, 'key': key}
-    print(queries)
-    r = requests.get(
-        'https://www.googleapis.com/books/v1/volumes', params=queries)
-    print(r)
-    if r.status_code != 200:
-        return render(request, 'paginarioweb/librosbuscar.html', {'message': 'Sorry, there seems to be an issue with Google Books right now.'})
-
-    data = r.json()
-
-    if not 'items' in data:
-        return render(request, 'paginarioweb/librosbuscar.html', {'message': 'Sorry, no books match that search term.'})
-
-    fetched_books = data['items']
-    books = []
-    for book in fetched_books:
-        book_dict = {
-            'title': book['volumeInfo']['title'],
-            'image': book['volumeInfo']['imageLinks']['thumbnail'] if 'imageLinks' in book['volumeInfo'] else "",
-            'authors': ", ".join(book['volumeInfo']['authors']) if 'authors' in book['volumeInfo'] else "",
-            'publisher': book['volumeInfo']['publisher'] if 'publisher' in book['volumeInfo'] else "",
-            'info': book['volumeInfo']['infoLink'],
-            'popularity': book['volumeInfo']['ratingsCount'] if 'ratingsCount' in book['volumeInfo'] else 0
-        }
-        books.append(book_dict)
-
-    def sort_by_pop(e):
-        return e['popularity']
-
-    books.sort(reverse=True, key=sort_by_pop)
-
-    return render(request, 'paginarioweb/librosbuscar.html', {'books': books})
-
 def libro(request, id):
 
     libro = get_object_or_404(Libro, id = id)
@@ -200,12 +155,12 @@ def mantenedor_libros(request):
 def agregar_libro(request):
 
     data = {
-        "form_libro": FomrularioLibro,
+        "form_libro": FormularioLibro,
         "mensaje": ""
     }
 
     if request.method == "POST":
-        formulario = FomrularioLibro(data = request.POST, files = request.FILES)
+        formulario = FormularioLibro(data = request.POST, files = request.FILES)
 
         if formulario.is_valid:
             formulario.save()
@@ -238,11 +193,11 @@ def modificar_libro(request, idlibro):
     libro = get_object_or_404(Libro, id = idlibro)
 
     data = {
-        "form_libro": FomrularioLibro(instance = libro)
+        "form_libro": FormularioLibro(instance = libro)
     }
 
     if request.method == "POST":
-        formulario = FomrularioLibro(data = request.POST, instance = libro, files = request.FILES)
+        formulario = FormularioLibro(data = request.POST, instance = libro, files = request.FILES)
 
         if formulario.is_valid:
             formulario.save()
@@ -257,7 +212,7 @@ def modificar_libro(request, idlibro):
 @login_required(login_url="login/")
 @permission_required(['Paginario.delete_libro'], login_url = "login/")
 """
-def eliminar_libro(idlibro):
+def eliminar_libro(request, idlibro):
 
     libro = get_object_or_404(Libro, id = idlibro)
 
@@ -266,7 +221,7 @@ def eliminar_libro(idlibro):
     return redirect(to = "modificar_libro_lista")
 
 
-# Metodo para poblar la BD con ayuda de la API Google Books:
+# Metodos para poblar la BD con ayuda de la API Google Books:
 
 def libros_mantenedor(request):
 
@@ -302,19 +257,64 @@ def libros_mantenedor(request):
             'id': book['id'],
             'nombre': book['volumeInfo']['title'],
             'descripcion': book['volumeInfo']['description'] if 'description' in book['volumeInfo'] else "",
-            'anio': book['volumeInfo']['publishedDate'],
-            'autor': book['volumeInfo']['authors'][0] if 'authors' in book['volumeInfo'] else "",
-            'imagen': book['volumeInfo']['imageLinks']['thumbnail'] if 'imageLinks' in book['volumeInfo'] else "/static/img/default-thumbnail.jpg",
+            'anio': book['volumeInfo']['publishedDate'] if 'publishedDate' in book['volumeInfo'] else "",
+            'autor': ", ".join(book['volumeInfo']['authors']) if 'authors' in book['volumeInfo'] else "",
+            'imagen': book['volumeInfo']['imageLinks']['thumbnail'] if 'imageLinks' in book['volumeInfo'] else "/static/img/default-thumbnail.jpg"
         }
         libros.append(book_dict)
 
     total_items = data.get('totalItems', 0)
     next_index = start_index + 10 if start_index + 10 < total_items else None   # Calcular el índice de la próxima página
 
-    print(libros)
-
     return render(request, 'mantenedor/libro/listar_libros_api.html', {
         'libros': libros,
         'search': search,  # Mantener la búsqueda
         'next_index': next_index  # Pasar el valor para la paginación
-        })
+    })
+
+def guardar_libro(request, id_libro):
+
+    GOOGLE_BOOKS_API_URL_BY_ID = "https://www.googleapis.com/books/v1/volumes/"
+
+    url = f"{GOOGLE_BOOKS_API_URL_BY_ID}{id_libro}"
+
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        data = response.json()
+        if "volumeInfo" in data:
+            libro_info = data['volumeInfo']
+
+            autor=", ".join(libro_info.get('authors', []))
+
+            autor_libro, created = Autor.objects.get_or_create(
+                nombre= autor,
+            )
+
+            año = datetime.datetime.strptime(libro_info.get('publishedDate'), '%Y-%m-%d')
+
+            editorial = Editorial.objects.get(nombre="Otra")
+
+            try:
+                libro = Libro(
+                    id=id_libro,
+                    nombre=libro_info.get('title'),
+                    descripcion=libro_info.get('description', ''),
+                    anio=año.year,
+                    portada=libro_info['imageLinks'].get('thumbnail') if 'imageLinks' in libro_info else "/static/img/default-thumbnail.jpg",
+                    id_editorial=editorial,
+                    id_autor=autor_libro
+                )
+
+                libro.save()
+
+                print("OK")
+
+                return redirect(to="agregar_libro")
+
+            except Exception as ex:
+                print("NOK")
+                print(traceback.format_exc())
+
+    return render(request, "mantenedor/libro/agregar.html")
+

@@ -1,12 +1,12 @@
 from django import forms
 from .models import Libro, Autor
 
-class FomrularioLibro(forms.ModelForm):
+class FormularioLibro(forms.ModelForm):
     class Meta:
         model = Libro
         fields = ('nombre','anio', 'portada', 'id_autor', 'id_editorial')
 
-class FomrularioAutor(forms.ModelForm):
+class FormularioAutor(forms.ModelForm):
     class Meta:
         model = Autor
         fields = ('nombre',)

@@ -55,7 +55,7 @@ class Libro(models.Model):
     nombre = models.CharField(max_length=100, null=False)
     descripcion = models.TextField(null=True)
     anio = models.IntegerField(null=False)
-    portada = models.ImageField(upload_to='covers/%Y/%m/%d', height_field=None, width_field=None, max_length=None)
+    portada = models.ImageField(upload_to='covers/%Y/%m/%d', height_field=None, width_field=None, max_length=400)
     id_editorial = models.ForeignKey(Editorial, on_delete = models.CASCADE)
     id_autor = models.ForeignKey(Autor, on_delete = models.CASCADE)
 
