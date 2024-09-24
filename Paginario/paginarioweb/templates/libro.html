@@ -5,25 +5,25 @@
 <div class="book-container">
     <div class="book-details">
         <div class="book-image">
-            <img src="book-placeholder.png" alt="Imagen del libro">
+            <img src="{{ libro.portada }}" alt="Imagen del libro">
         </div>
         <div class="book-info">
-            <p class="year-author"><span>Año</span> · <span>Autor</span></p>
-            <h1 class="book-title">Título</h1>
+            <p class="year-author"><span>{{ libro.anio }}</span> · <span>{{ libro.id_autor.nombre }}</span></p>
+            <h1 class="book-title">{{ libro.nombre }}</h1>
             <div class="categories">
                 <span class="category">Categoría</span>
                 <span class="category">Categoría</span>
             </div>
             <p class="isbn">ISBN 9789564085937</p>
             <div class="book-icons">
-                <i class="fas fa-heart icon" onclick="toggleFavorite(this)"></i>
+                <a href="{% url 'agregar_favorito' id_libro=libro.id %}"> <i class="fas fa-heart icon"></i></a>
                 <i class="fas fa-bookmark icon"></i>
                 <i class="fas fa-list icon"></i>
             </div>
         </div>
         <div class="book-description">
             <p>Breve descripción del libro</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sagittis, justo ac consequat feugiat, ipsum nisi porttitor dolor, sit amet pretium ante neque porta augue...</p>
+            <p>{{ libro.descripcion }}</p>
         </div>
     </div>
 

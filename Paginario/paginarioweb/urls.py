@@ -12,11 +12,15 @@ urlpatterns = [
     path('', auth_views.LoginView.as_view(), name='login'),
     path('home/', home, name='home'),
     path('register/', register, name='register'),
-    path('libro/', vista_libro, name='vista_libro'),
+    path('libro/<id_libro>', vista_libro, name='vista_libro'),
 
     path('accounts/', include('django.contrib.auth.urls')),
 
     path('librosbuscar/', books, name='librosbuscar'),
+
+    #Listas:
+    path('libro/<id_libro>/', agregar_favorito, name='agregar_favorito'),
+
 
     # Mantenedor de Administradores:
     path('j/<int:id>/', libro, name="libro"),

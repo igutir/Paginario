@@ -7,7 +7,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required, permission_required
 
 from .forms import FormularioLibro, BookSearch
-from .models import Libro, Usuario, Autor, Editorial, Usuario_Genero_Literario
+from .models import Libro, Usuario, Autor, Editorial, Lista, Usuario_Genero_Literario
 
 from string import Template
 
@@ -20,10 +20,16 @@ env.read_env()  # reading .env file
 key = env.str('API_KEY')
 
 def home(request):
-    return render(request, "index.html")
 
-def vista_libro(request):
-    return render(request, "libro.html")
+    libros = Libro.objects.all()
+
+    return render(request, "index.html", {"libros" : libros})
+
+def vista_libro(request, id_libro):
+
+    libro = get_object_or_404(Libro, id = id_libro)
+
+    return render(request, "libro.html", {"libro" : libro})
 
 
 def register(request):
@@ -318,3 +324,29 @@ def guardar_libro(request, id_libro):
 
     return render(request, "mantenedor/libro/agregar.html")
 
+## Agregar libro a la lista de favoritos
+def agregar_favorito(request, id_libro):
+    print("ola")
+
+    user_actual = request.user
+
+    libro = get_object_or_404(Libro, id=id_libro)
+
+    usuario = get_object_or_404(Usuario, user_id=user_actual.id)
+
+    usuario = Usuario.objects.get(nombre=usuario)
+
+    lista_favoritos = Lista()
+
+    lista_favoritos.nombre = "Favoritos"
+    lista_favoritos.id_usuario = usuario
+    lista_favoritos.id_libro = libro
+
+    try:
+        lista_favoritos.save()
+
+    except Exception as ex:
+        print("NOK")
+        print(traceback.format_exc())
+
+    return render(request, "libro.html")
