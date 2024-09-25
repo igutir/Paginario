@@ -326,28 +326,25 @@ def guardar_libro(request, id_libro):
 
 ## Agregar libro a la lista de favoritos
 def agregar_favorito(request, id_libro):
-    print("ola")
 
     user_actual = request.user
 
     libro = get_object_or_404(Libro, id=id_libro)
 
     usuario = get_object_or_404(Usuario, user_id=user_actual.id)
-
     usuario = Usuario.objects.get(nombre=usuario)
 
-    lista_favoritos = Lista()
+    data = {
+            "libro": libro,
+            "mensaje": ""
+        }
 
-    lista_favoritos.nombre = "Favoritos"
-    lista_favoritos.id_usuario = usuario
-    lista_favoritos.id_libro = libro
+    Lista_favoritos, creado = Lista.objects.get_or_create(nombre="Favoritos", id_usuario=usuario, id_libro=libro)
 
-    try:
-        lista_favoritos.save()
+    if creado:
+        data["mensaje"] = "Libro agregado a la lista de favoritos"
+    else:
+        data["mensaje"] = "Este libro ya existe en tu lista de favoritos"
 
-    except Exception as ex:
-        print("NOK")
-        print(traceback.format_exc())
-
-    return render(request, "libro.html", {"libro": libro})
+    return render(request, "libro.html", data)
 
