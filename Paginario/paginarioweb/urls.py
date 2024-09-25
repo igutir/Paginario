@@ -19,8 +19,7 @@ urlpatterns = [
     path('librosbuscar/', books, name='librosbuscar'),
 
     #Listas:
-    path('libro/<id_libro>', agregar_favorito, name='agregar_favorito'),
-
+    path('libro/<id_libro>/f/', agregar_favorito, name='agregar_favorito'),
 
     # Mantenedor de Administradores:
     path('j/<int:id>/', libro, name="libro"),

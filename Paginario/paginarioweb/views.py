@@ -349,4 +349,5 @@ def agregar_favorito(request, id_libro):
         print("NOK")
         print(traceback.format_exc())
 
-    return render(request, "libro.html")
+    return render(request, "libro.html", {"libro": libro})
+
