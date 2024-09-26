@@ -14,16 +14,51 @@
                 <span class="category">Categoría</span>
                 <span class="category">Categoría</span>
             </div>
+
+                    <!-- Calificación con estrellas -->
+                    <div class="rating">
+                        <i class="far fa-star" id="star1" onclick="rateBook(1)"></i>
+                        <i class="far fa-star" id="star2" onclick="rateBook(2)"></i>
+                        <i class="far fa-star" id="star3" onclick="rateBook(3)"></i>
+                        <i class="far fa-star" id="star4" onclick="rateBook(4)"></i>
+                        <i class="far fa-star" id="star5" onclick="rateBook(5)"></i>
+                    </div>
+
             <p class="isbn">ISBN 9789564085937</p>
             <div class="book-icons">
                 <a href="{% url 'agregar_favorito' libro.id %}"> <i class="fas fa-heart icon"></i></a>
-                <i class="fas fa-bookmark icon"></i>
+
+
+                <!-- Dropdown de Bootstrap con íconos -->
+                <div class="dropdown d-inline">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i id="bookmark-icon" class="fas fa-bookmark icon"></i> <span id="estado-texto">Estado</span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item" href="#" onclick="setEstado('leido', 'fas fa-eye', 'Leído')"><i class="fas fa-eye"></i> Leído</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="setEstado('progreso', 'fas fa-spinner', 'En progreso')"><i class="fas fa-spinner"></i> En progreso</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="setEstado('espera', 'fas fa-clock', 'En espera')"><i class="fas fa-clock"></i> En espera</a></li>
+                    </ul>
+                </div>
+
                 <i class="fas fa-list icon"></i>
             </div>
         </div>
-        <div class="book-description">
+
+
+
+        <!-- <div class="book-description">
             <p>Breve descripción del libro</p>
             <p>{{ libro.descripcion }}</p>
+        </div> -->
+
+
+        <div class="book-description">
+            <p>Breve descripción del libro</p>
+            <p id="descripcion">
+                {{ libro.descripcion|slice:":200" }}<span id="dots">...</span><span id="more" style="display:none">{{ libro.descripcion|slice:"200:" }}</span>
+            </p>
+            <button onclick="toggleDescription()" id="readMoreBtn" class="btn btn-link">Leer más</button>
         </div>
     </div>
 
@@ -49,6 +84,53 @@
             icon.classList.add('active');
             // Aquí puedes añadir la lógica para agregar el libro a favoritos
             console.log("Libro agregado a favoritos");
+        }
+    }
+
+    function setEstado(estado, iconClass, textoEstado) {
+        // Cambiar el icono del bookmark
+        var bookmarkIcon = document.getElementById('bookmark-icon');
+        bookmarkIcon.className = iconClass + ' icon';
+        
+        // Cambiar el texto del estado
+        var estadoTexto = document.getElementById('estado-texto');
+        estadoTexto.innerText = textoEstado;
+
+        console.log("Estado del libro cambiado a:", estado);
+        // Aquí puedes agregar la lógica de actualización del estado en la base de datos
+    }
+
+        // Función para manejar las estrellas de calificación
+        function rateBook(rating) {
+        for (let i = 1; i <= 5; i++) {
+            const star = document.getElementById('star' + i);
+            if (i <= rating) {
+                star.classList.remove('far');
+                star.classList.add('fas');
+            } else {
+                star.classList.remove('fas');
+                star.classList.add('far');
+            }
+        }
+        console.log("Calificación del libro: " + rating);
+        // Aquí puedes agregar la lógica de guardado de calificación
+    }
+
+
+    // Función para el botón "Leer más"
+    function toggleDescription() {
+        var dots = document.getElementById("dots");
+        var moreText = document.getElementById("more");
+        var btnText = document.getElementById("readMoreBtn");
+
+        if (dots.style.display === "none") {
+            dots.style.display = "inline";
+            btnText.innerHTML = "Leer más"; 
+            moreText.style.display = "none";
+        } else {
+            dots.style.display = "none";
+            btnText.innerHTML = "Leer menos"; 
+            moreText.style.display = "inline";
         }
     }
 </script>
