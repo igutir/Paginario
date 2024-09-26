@@ -35,9 +35,9 @@
                         <i id="bookmark-icon" class="fas fa-bookmark icon"></i> <span id="estado-texto">Estado</span>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <li><a class="dropdown-item" href="#" onclick="setEstado('leido', 'fas fa-eye', 'Leído')"><i class="fas fa-eye"></i> Leído</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="setEstado('progreso', 'fas fa-spinner', 'En progreso')"><i class="fas fa-spinner"></i> En progreso</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="setEstado('espera', 'fas fa-clock', 'En espera')"><i class="fas fa-clock"></i> En espera</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="setEstado('leido', 'fas fa-eye', 'Leído', '{{ libro.id }}')"><i class="fas fa-eye"></i> Leído</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="setEstado('progreso', 'fas fa-spinner', 'En progreso', '{{ libro.id }}')"><i class="fas fa-spinner"></i> En progreso</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="setEstado('espera', 'fas fa-clock', 'En espera', '{{ libro.id }}')"><i class="fas fa-clock"></i> En espera</a></li>
                     </ul>
                 </div>
 
@@ -87,17 +87,19 @@
         }
     }
 
-    function setEstado(estado, iconClass, textoEstado) {
+    function setEstado(estado, iconClass, textoEstado, id_libro) {
         // Cambiar el icono del bookmark
         var bookmarkIcon = document.getElementById('bookmark-icon');
         bookmarkIcon.className = iconClass + ' icon';
-        
+
         // Cambiar el texto del estado
         var estadoTexto = document.getElementById('estado-texto');
         estadoTexto.innerText = textoEstado;
 
         console.log("Estado del libro cambiado a:", estado);
         // Aquí puedes agregar la lógica de actualización del estado en la base de datos
+
+        window.location.href = id_libro+"/"+estado+"/";
     }
 
         // Función para manejar las estrellas de calificación

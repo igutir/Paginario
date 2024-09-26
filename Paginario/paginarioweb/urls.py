@@ -18,6 +18,9 @@ urlpatterns = [
 
     path('librosbuscar/', books, name='librosbuscar'),
 
+    # Actualización del estado del libro
+    path('libro/<id_libro>/<estado>/', set_estado_libro, name='set_estado_libro'),
+
     #Listas:
     path('libro/<id_libro>/f/', agregar_favorito, name='agregar_favorito'),
 

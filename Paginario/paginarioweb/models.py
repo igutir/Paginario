@@ -81,7 +81,7 @@ class Usuario_Libro(models.Model):
     id_libro = models.ForeignKey(Libro, on_delete = models.CASCADE)
     calificacion = models.IntegerField(null=True)
     resenia = models.TextField(null=True, blank=True)
-    id_estado_libro = models.ForeignKey(Estado_Libro, on_delete = models.CASCADE)
+    id_estado_libro = models.ForeignKey(Estado_Libro, on_delete = models.CASCADE, null=True, )
 
     class Meta:
         db_table = '"usuario_libro"'
