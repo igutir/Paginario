@@ -101,3 +101,145 @@ input.form-control:focus {
 h5 {
     margin-bottom: 1rem;
 }
+
+
+/* Libro */
+
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #2b3a49;
+    color: #ffffff;
+}
+
+.book-container {
+    background-color: #364559;
+    border-radius: 20px;
+    overflow: hidden;
+    padding: 20px;
+    width: 70%;
+    margin: 2rem auto;
+}
+
+.book-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ffffff;
+}
+.book-image {
+    width: 20%;
+}
+.book-image img {
+    width: 150px;
+    height: 200px;
+    background-color: #d0d0d0;
+    border-radius: 10px;
+}
+
+.book-info {
+    width: 30%;
+    padding-left: 20px;
+}
+
+.year-author {
+    font-size: 14px;
+    color: #cfd6e3;
+}
+
+.book-title {
+    font-size: 24px;
+    margin: 10px 0;
+    font-weight: bold;
+}
+
+.categories {
+    margin: 10px 0;
+}
+
+.category {
+    background-color: #ffffff;
+    color: #2b3a49;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-right: 10px;
+    display: inline-block;
+}
+
+.isbn {
+    margin: 10px 0;
+    color: #cfd6e3;
+    font-size: 14px;
+}
+
+.book-icons {
+    margin: 10px 0;
+}
+
+.icon {
+    font-size: 24px;
+    margin-right: 15px;
+    cursor: pointer;
+}
+.icon.active {
+    color: #e0ce5a; /* Color para favoritos activado */
+}
+
+.book-description {
+    width: 50%;
+    margin: auto;
+}
+.book-description p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #cfd6e3;
+}
+
+.reviews {
+    margin-top: 20px;
+}
+
+.reviews h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #cfd6e3;
+}
+
+.review {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #5c6774;
+}
+
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    background-color: #cfd6e3;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.review-content {
+    flex-grow: 1;
+}
+
+.review-author {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.review-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #cfd6e3;
+}

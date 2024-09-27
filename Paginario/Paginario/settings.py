@@ -36,6 +36,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_REDIRECT_URL = '/home'
+LOGOUT_REDIRECT_URL = '/'
 
 # Application definition
 
@@ -92,7 +94,7 @@ DATABASES = {
         'ENGINE':'django.db.backends.oracle',
         'NAME':'portafoliog3_high',
         'USER':'ADM_PAGINARIO',
-        'PASSWORD':'PortafolioG3',#Please provide the db password here
+        'PASSWORD':'PortafolioG3',
     }
 }
 

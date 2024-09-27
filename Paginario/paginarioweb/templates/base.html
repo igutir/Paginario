@@ -8,6 +8,7 @@
     <title>PaginarioApp</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="{% static '/css/style-base.css' %}">
 </head>
 
@@ -68,15 +69,27 @@
                         <i class="bi bi-search"></i>
                     </button>
                 </form>
+                {% if user.is_authenticated %}
                 <div class="navbar-nav ms-auto">
                     <div class="nav-item d-flex align-items-center">
                         <img src="https://via.placeholder.com/40" alt="User photo" class="rounded-circle me-2">
                         <div class="d-flex flex-column">
-                            <span>Nischal Gautam</span>
+                            
+                            <span>{{ user.username }}</span>
                             <small class="text-muted">Super Admin</small>
                         </div>
+                        <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
                     </div>
                 </div>
+
+                {% else %}
+
+                <div class="navbar-nav ms-auto">
+                    <div class="nav-item d-flex align-items-center">
+                        <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+                    </div>
+                </div>
+                {% endif %}
             </nav>
 
             {% block contenido %}

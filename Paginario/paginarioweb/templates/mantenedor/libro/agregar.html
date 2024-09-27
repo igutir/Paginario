@@ -23,6 +23,51 @@
         </form>
         <hr class="my-4">
         <h3 class="m-3"> Resultado: {{mensaje}} </h3>
+
+        <form class="d-flex mx-auto" style="max-width: 600px;" action="{% url 'libros_mantenedor' %}" method="GET">
+            {% csrf_token %}
+            <input class="form-control me-2" type="search" placeholder="Buscar libro" name="search"
+                aria-label="Search" value="{{ search }}">
+            <button class="btn btn-outline-success" type="submit">
+                <i class="bi bi-search"></i>
+            </button>
+        </form>
+
+        {% if libros_mantenedor %}
+            <ul class="grid">
+
+                <div class="container my-4">
+                    <div class="row">
+                        {% for libro in libros_mantenedor %}
+                        <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+                            <div class="card h-100" style="border:0;">
+                                <img class="card-img-top" src="{{ libro.imagen }}" alt="{{ libro.title }}" style="height: 190px; object-fit: cover;">
+                                <div class="card-body">
+                                    <p class="card-text" style="font-size: 14px;">por {{ libro.autor }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    {% if next_index %}
+
+                    <div class="text-center my-4">
+                        <a href="?search={{ search }}&start={{ next_index }}" class="btn btn-primary">Cargar más</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </ul>
+        {% else %}
+        <div class="error">
+            <h2>
+                {{ message }}
+            </h2>
+            <a href="/">Search again</a>
+        </div>
+
+        {% endif %}
+
     </div>
 </div>
 
