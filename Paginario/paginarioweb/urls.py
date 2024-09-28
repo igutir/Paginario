@@ -1,10 +1,5 @@
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from .views import home
-#from .views import log
-from .views import books
-from .views import vista_libro
-from .views import register
 from .views import *
 
 urlpatterns = [
@@ -23,6 +18,9 @@ urlpatterns = [
 
     #Listas:
     path('libro/<id_libro>/f/', agregar_favorito, name='agregar_favorito'),
+
+    #Reporteria
+    path('usuarios-mes/', obtener_usuarios_mes, name='obtener_usuarios_mes'),
 
     # Mantenedor de Administradores:
     path('j/<int:id>/', libro, name="libro"),

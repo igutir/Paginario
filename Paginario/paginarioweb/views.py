@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, Http404
-from django.db import IntegrityError, transaction
+from django.db import IntegrityError, transaction, connection
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User, Group
@@ -12,7 +12,6 @@ from .models import Libro, Usuario, Autor, Editorial, Lista, Estado_Libro, Usuar
 from string import Template
 
 import json, traceback, requests, environ, datetime
-
 
 env = environ.Env()
 env.read_env()  # reading .env file
@@ -367,7 +366,6 @@ def guardar_libro(request, id_libro):
             elif len(fecha) == 7:
                 fecha = fecha + "-01"
 
-
             año = datetime.datetime.strptime(fecha, '%Y-%m-%d')
 
             editorial = Editorial.objects.get(nombre="Otra")
@@ -419,3 +417,33 @@ def agregar_favorito(request, id_libro):
 
     return render(request, "libro.html", data)
 
+# Reportería:
+def obtener_usuarios_mes(request):
+    mes = request.GET.get('mes', datetime.datetime.now().month)  # Mes actual por defecto
+    ano = request.GET.get('ano', datetime.datetime.now().year)  # Año actual por defecto
+
+    # Validar que mes y año sean enteros
+    try:
+        mes = int(mes)
+        ano = int(ano)
+    except ValueError:
+        mes = datetime.datetime.now().month
+        ano = datetime.datetime.now().year
+
+    # Ejecutar el procedimiento o consulta SQL con los parámetros
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT ID, NOMBRE, EMAIL, TO_CHAR(FECHA_REGISTRO, 'DD/MM/YYYY'), USER_ID
+            FROM usuario
+            WHERE EXTRACT(YEAR FROM FECHA_REGISTRO) = %s
+              AND EXTRACT(MONTH FROM FECHA_REGISTRO) = %s
+        """, [ano, mes])
+        rows = cursor.fetchall()
+
+    # datos para el template
+    usuarios = [{'id': row[0], 'nombre': row[1], 'email': row[2], 'fecha_registro': row[3], 'user_id': row[4]} for row in rows]
+
+    current_year = datetime.datetime.now().year
+    years = list(range(current_year - 10, current_year + 1))
+
+    return render(request, 'usuarios_mes.html', {'usuarios': usuarios, 'years': years})
