@@ -360,7 +360,15 @@ def guardar_libro(request, id_libro):
                 nombre= autor,
             )
 
-            año = datetime.datetime.strptime(libro_info.get('publishedDate'), '%Y-%m-%d')
+            fecha = libro_info.get('publishedDate')
+
+            if len(fecha) == 4:
+                fecha = fecha + "-01-01"
+            elif len(fecha) == 7:
+                fecha = fecha + "-01"
+
+
+            año = datetime.datetime.strptime(fecha, '%Y-%m-%d')
 
             editorial = Editorial.objects.get(nombre="Otra")
 
