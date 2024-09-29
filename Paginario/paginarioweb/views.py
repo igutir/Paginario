@@ -6,6 +6,8 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required, permission_required
 
+from django.core.exceptions import ObjectDoesNotExist
+
 from .forms import FormularioLibro, BookSearch
 from .models import Libro, Usuario, Autor, Editorial, Lista, Estado_Libro, Usuario_Libro, Usuario_Genero_Literario
 
@@ -18,31 +20,47 @@ env.read_env()  # reading .env file
 
 key = env.str('API_KEY')
 
+
+# Vista principal
 def home(request):
 
     libros = Libro.objects.all()
 
     return render(request, "index.html", {"libros" : libros})
 
+def obtener_usuario_actual(request):
+
+    user_actual = request.user
+    usuario = get_object_or_404(Usuario, user_id=user_actual.id)
+
+    return Usuario.objects.get(nombre=usuario)
+
+#Vista de para el libro según id
 def vista_libro(request, id_libro):
 
-    user_actual = request.user
-    usuario = get_object_or_404(Usuario, user_id=user_actual.id)
-    usuario = Usuario.objects.get(nombre=usuario)
+    usuario = obtener_usuario_actual(request)
 
-    libro = get_object_or_404(Libro, id = id_libro)
+    libro = get_object_or_404(Libro, id=id_libro)
 
-    estado_libro = get_estado_libro(id_libro, usuario.id)
+    estado_libro = obtener_estado_libro(id_libro, usuario.id)
 
-    return render(request, "libro.html", {"libro" : libro, "estado_libro": estado_libro})
+    calificacion_libro = obtener_calificacion_libro(id_libro, usuario.id)
+
+    reseñas = obtener_reseñas(request, id_libro)
+
+    data = {
+        "libro" : libro,
+        "estado_libro": estado_libro,
+        "calificacion": calificacion_libro,
+        "reseñas": reseñas
+    }
+
+    return render(request, "libro.html", data)
 
 # Cambio del estado del libro
+def poner_estado_libro(request, id_libro, estado):
 
-def set_estado_libro(request, id_libro, estado):
-
-    user_actual = request.user
-    usuario = get_object_or_404(Usuario, user_id=user_actual.id)
-    usuario = Usuario.objects.get(nombre=usuario)
+    usuario = obtener_usuario_actual(request)
 
     libro = get_object_or_404(Libro, id=id_libro)
 
@@ -57,7 +75,6 @@ def set_estado_libro(request, id_libro, estado):
             nombre_estado = "Leido"
         case _:
             nombre_estado = ""
-
 
     estado_libro = get_object_or_404(Estado_Libro, nombre=nombre_estado)
 
@@ -77,23 +94,112 @@ def set_estado_libro(request, id_libro, estado):
 
     data["mensaje"] = "Estado del libro cambiado a " + estado_libro.nombre
 
-    #return render(request, "libro.html", data)
     return redirect(to = "/libro/"+id_libro)
 
-def get_estado_libro(id_libro, id_usuario):
-
-    estado_libro = ""
+# Obtener estado del libro para mostrarlo en el front
+def obtener_estado_libro(id_libro, id_usuario):
 
     try:
-        usuario_libro = get_object_or_404(Usuario_Libro, id_libro=id_libro, id_usuario=id_usuario)
+        usuario_libro = Usuario_Libro.objects.get(id_libro=id_libro, id_usuario=id_usuario)
 
-        estado_libro = get_object_or_404(Estado_Libro, id=usuario_libro.id_estado_libro.id).nombre
+        estado_libro = usuario_libro.id_estado_libro.nombre
 
-    except Http404:
-        estado_libro = "None"
+    except ObjectDoesNotExist:
+
+        return "None"
 
     return estado_libro
 
+# Agregar calificación al libro
+def poner_calificacion(request, id_libro, rating):
+
+    usuario = obtener_usuario_actual(request)
+
+    libro = get_object_or_404(Libro, id=id_libro)
+
+    data = {
+            "libro": libro,
+            "mensaje": ""
+        }
+
+    usuario_libro, creado = Usuario_Libro.objects.update_or_create(
+        id_usuario=usuario,
+        id_libro=libro
+        )
+
+    usuario_libro.calificacion = rating
+
+    usuario_libro.save()
+
+    if rating == 1:
+        data["mensaje"] = "Calificación del libro cambiado a " + str(rating) + " estrella."
+    else:
+        data["mensaje"] = "Calificación del libro cambiado a " + str(rating) + " estrellas."
+
+    return redirect(to = "/libro/"+id_libro)
+
+# Obtener calificacion del libro para mostrarlo en el front
+def obtener_calificacion_libro(id_libro, id_usuario):
+
+    calificacion = 0
+
+    try:
+        calificacion = get_object_or_404(Usuario_Libro, id_libro=id_libro, id_usuario=id_usuario).calificacion
+
+    except Http404:
+        calificacion = 0
+
+    return calificacion
+
+# Agregar reseña al libro
+def agregar_reseña(request, id_libro, reviewText):
+
+    usuario = obtener_usuario_actual(request)
+
+    libro = get_object_or_404(Libro, id=id_libro)
+
+    data = {
+            "libro": libro,
+            "mensaje": ""
+        }
+
+    usuario_libro, creado = Usuario_Libro.objects.update_or_create(
+        id_usuario=usuario,
+        id_libro=libro
+        )
+
+    usuario_libro.resenia = reviewText
+
+    usuario_libro.save()
+
+    data["mensaje"] = "La reseña ha sido añadida"
+
+    return redirect(to = "/libro/"+id_libro)
+
+# Obtener reseña del usuario actual
+def obtener_reseña_usuario(id_libro, id_usuario):
+
+    try:
+        reseña = get_object_or_404(Usuario_Libro, id_libro=id_libro, id_usuario=id_usuario).resenia
+
+    except Http404:
+
+        reseña = ""
+
+    return reseña
+
+# Obtener todas las reseñas del libro actual
+def obtener_reseñas(request, id_libro):
+
+    reseñas = Usuario_Libro.objects.filter(id_libro=id_libro).values_list('resenia', flat=True).order_by('-id')
+
+    data = {
+        'resenias' : reseñas
+    }
+
+    return render(request, "mantenedor/libro/listado_libros.html", data)
+
+# Método para registrar un nuevo usuario al sistema
 def register(request):
 
     data = {
@@ -139,7 +245,7 @@ def register(request):
 
     return render(request, "registration/register.html")
 
-
+# Método para la búsqueda de libros mediante la API Google Books en la homepage
 def books(request):
     search = request.GET.get('search', False)
 
@@ -195,6 +301,7 @@ def books(request):
         'next_index': next_index  # Pasar el valor para la paginación
         })
 
+
 def libro(request, id):
 
     libro = get_object_or_404(Libro, id = id)
@@ -206,11 +313,10 @@ def libro(request, id):
     return render(request, "libro.html", data)
 
 ## Mantenedor de libros:
-"""
+
 ## Permisos en base a lo otorgado al perfil de administrador en el panel de administrador
 @login_required(login_url = "login/")
 @permission_required(['Paginario.add_libro', 'Paginario.delete_libro'], login_url = "login/")
-"""
 def mantenedor_libros(request):
 
     return render(request, "mantenedor/libro/mantenedor_libros.html")

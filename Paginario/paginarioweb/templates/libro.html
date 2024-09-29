@@ -15,14 +15,14 @@
                 <span class="category">Categoría</span>
             </div>
 
-                    <!-- Calificación con estrellas -->
-                    <div class="rating">
-                        <i class="far fa-star" id="star1" onclick="rateBook(1)"></i>
-                        <i class="far fa-star" id="star2" onclick="rateBook(2)"></i>
-                        <i class="far fa-star" id="star3" onclick="rateBook(3)"></i>
-                        <i class="far fa-star" id="star4" onclick="rateBook(4)"></i>
-                        <i class="far fa-star" id="star5" onclick="rateBook(5)"></i>
-                    </div>
+                <!-- Calificación con estrellas -->
+                <div class="rating">
+                    <i><a class="far fa-star" id="star1" onclick="rateBook('{{ libro.id }}', '1')"></a></i>
+                    <i><a class="far fa-star" id="star2" onclick="rateBook('{{ libro.id }}', '2')"></a></i>
+                    <i><a class="far fa-star" id="star3" onclick="rateBook('{{ libro.id }}', '3')"></a></i>
+                    <i><a class="far fa-star" id="star4" onclick="rateBook('{{ libro.id }}', '4')"></a></i>
+                    <i><a class="far fa-star" id="star5" onclick="rateBook('{{ libro.id }}', '5')"></a></i>
+                </div>
 
             <p class="isbn">ISBN 9789564085937</p>
             <div class="book-icons">
@@ -65,7 +65,7 @@
             <p id="descripcion">
                 {{ libro.descripcion|slice:":200" }}<span id="dots">...</span><span id="more" style="display:none">{{ libro.descripcion|slice:"200:" }}</span>
             </p>
-            <button onclick="toggleDescription()" id="readMoreBtn" class="btn btn-link">Leer más</button>
+            <button onclick="toggleDescription('{{ libro.id }}')" id="readMoreBtn" class="btn btn-link">Leer más</button>
         </div>
     </div>
 
@@ -87,13 +87,14 @@
             <i class="fas fa-plus"></i>
         </button>
     </div>
-    
+
     <!-- Formulario para agregar reseña (oculto inicialmente) -->
+
     <div class="review-form" id="reviewForm" style="display: none;">
-        <textarea id="reviewText" placeholder="Escribe tu reseña aquí..."></textarea>
-        <button class="btn btn-primary" onclick="addReview()">Agregar Reseña</button>
+        <textarea name="textoReseña" id="reviewText" placeholder="Escribe tu reseña aquí..."></textarea>
+        <a type=button class="btn btn-primary" onclick="addReview('{{ libro.id }}')">Agregar Reseña</a>
     </div>
-    
+
     <div class="review-list">
         <!-- Aquí se listarán las reseñas existentes -->
         <div class="review">
@@ -134,8 +135,8 @@
         window.location.href = id_libro+"/"+estado+"/";
     }
 
-        // Función para manejar las estrellas de calificación
-        function rateBook(rating) {
+    // Función para manejar las estrellas de calificación
+    function rateBook(id_libro, rating) {
         for (let i = 1; i <= 5; i++) {
             const star = document.getElementById('star' + i);
             if (i <= rating) {
@@ -148,8 +149,8 @@
         }
         console.log("Calificación del libro: " + rating);
         // Aquí puedes agregar la lógica de guardado de calificación
+        window.location.href = id_libro+"/rat/"+rating+"/";
     }
-
 
     // Función para el botón "Leer más"
     function toggleDescription() {
@@ -169,20 +170,22 @@
     }
 
     function toggleReviewForm() {
-    var reviewForm = document.getElementById("reviewForm");
-    if (reviewForm.style.display === "none" || reviewForm.style.display === "") {
-        reviewForm.style.display = "block";
-    } else {
-        reviewForm.style.display = "none";
-    }
+        var reviewForm = document.getElementById("reviewForm");
+        if (reviewForm.style.display === "none" || reviewForm.style.display === "") {
+            reviewForm.style.display = "block";
+        } else {
+            reviewForm.style.display = "none";
+        }
 }
 
 // Función para agregar una reseña
-function addReview() {
+function addReview(id_libro) {
     var reviewText = document.getElementById("reviewText").value;
     if (reviewText.trim() !== "") {
         // Aquí se puede implementar la lógica para enviar la reseña al servidor
         alert("Reseña agregada: " + reviewText);
+
+        window.location.href = id_libro+"/rev/"+reviewText+"/";
 
         // Actualizar la vista con la nueva reseña
         var reviewList = document.querySelector(".review-list");

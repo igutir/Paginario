@@ -87,7 +87,7 @@ class Usuario_Libro(models.Model):
         db_table = '"usuario_libro"'
 
     def __str__(self):
-        return str("ID USUARIO: " + self.id_usuario + " | " + "ID LIBRO: " + self.id_libro)
+        return str("ID USUARIO: " + str(self.id_usuario) + " | " + "ID LIBRO: " + str(self.id_libro))
 
 class Libro_Genero_Literario(models.Model):
     id_libro = models.ForeignKey(Libro, on_delete = models.CASCADE)
