@@ -69,8 +69,33 @@
         </div>
     </div>
 
-    <div class="reviews">
+    <!-- <div class="reviews">
         <h2>RESEÑAS</h2>
+        <div class="review">
+            <div class="user-avatar"></div>
+            <div class="review-content">
+                <p class="review-author">NOMBRE</p>
+                <p class="review-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sagittis, justo ac consequat feugiat, ipsum nisi porttitor dolor...</p>
+            </div>
+        </div>
+    </div> -->
+
+    <div class="reviews-header">
+        <h2>RESEÑAS</h2>
+        <!-- Botón de agregar reseña -->
+        <button class="add-review-btn" onclick="toggleReviewForm()">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+    
+    <!-- Formulario para agregar reseña (oculto inicialmente) -->
+    <div class="review-form" id="reviewForm" style="display: none;">
+        <textarea id="reviewText" placeholder="Escribe tu reseña aquí..."></textarea>
+        <button class="btn btn-primary" onclick="addReview()">Agregar Reseña</button>
+    </div>
+    
+    <div class="review-list">
+        <!-- Aquí se listarán las reseñas existentes -->
         <div class="review">
             <div class="user-avatar"></div>
             <div class="review-content">
@@ -142,6 +167,43 @@
             moreText.style.display = "inline";
         }
     }
+
+    function toggleReviewForm() {
+    var reviewForm = document.getElementById("reviewForm");
+    if (reviewForm.style.display === "none" || reviewForm.style.display === "") {
+        reviewForm.style.display = "block";
+    } else {
+        reviewForm.style.display = "none";
+    }
+}
+
+// Función para agregar una reseña
+function addReview() {
+    var reviewText = document.getElementById("reviewText").value;
+    if (reviewText.trim() !== "") {
+        // Aquí se puede implementar la lógica para enviar la reseña al servidor
+        alert("Reseña agregada: " + reviewText);
+
+        // Actualizar la vista con la nueva reseña
+        var reviewList = document.querySelector(".review-list");
+        var newReview = document.createElement("div");
+        newReview.className = "review";
+        newReview.innerHTML = `
+            <div class="user-avatar"></div>
+            <div class="review-content">
+                <p class="review-author">Usuario Actual</p>
+                <p class="review-text">${reviewText}</p>
+            </div>
+        `;
+        reviewList.appendChild(newReview);
+
+        // Limpiar el formulario
+        document.getElementById("reviewText").value = "";
+        toggleReviewForm();
+    } else {
+        alert("Por favor escribe una reseña antes de agregar.");
+    }
+}
 </script>
 
 {% endblock %}
