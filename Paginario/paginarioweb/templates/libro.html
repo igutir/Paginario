@@ -32,7 +32,14 @@
                 <!-- Dropdown de Bootstrap con íconos -->
                 <div class="dropdown d-inline">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i id="bookmark-icon" class="fas fa-bookmark icon"></i> <span id="estado-texto">Estado</span>
+                        <i id="bookmark-icon" class="icon {% if estado_libro == 'Leido' %}fas fa-eye{% elif estado_libro == 'En progreso' %}fas fa-spinner{% elif estado_libro == 'En espera' %}fas fa-clock{% else %}fas fa-bookmark{% endif %}"></i>
+                        <span id="estado-texto">
+                            {% if estado_libro != 'None' %}
+                                {{ estado_libro }}
+                            {% else %}
+                                Estado
+                            {% endif %}
+                        </span>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="#" onclick="setEstado('leido', 'fas fa-eye', 'Leído', '{{ libro.id }}')"><i class="fas fa-eye"></i> Leído</a></li>
