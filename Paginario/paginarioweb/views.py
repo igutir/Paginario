@@ -15,6 +15,9 @@ from string import Template
 
 import json, traceback, requests, environ, datetime
 
+from django.conf import settings
+import cx_Oracle
+
 env = environ.Env()
 env.read_env()  # reading .env file
 
@@ -25,8 +28,15 @@ key = env.str('API_KEY')
 def home(request):
 
     libros = Libro.objects.all()
+    top_libros = obtener_top_libros() # Obtener los top libros
 
-    return render(request, "index.html", {"libros" : libros})
+    context = {
+        "libros": libros,
+        "top_libros": top_libros  # Agregar los libros top al contexto
+    }
+
+    return render(request, "index.html", context)
+
 
 def obtener_usuario_actual(request):
 
@@ -562,3 +572,33 @@ def obtener_usuarios_mes(request):
     years = list(range(current_year - 10, current_year + 1))
 
     return render(request, 'usuarios_mes.html', {'usuarios': usuarios, 'years': years})
+
+# Muestra el top 10 de calificaciones de los libros
+def obtener_top_libros():
+    # Crear un cursor y una conexión a la base de datos
+    connection = cx_Oracle.connect(settings.DATABASES['default']['USER'],
+                                    settings.DATABASES['default']['PASSWORD'],
+                                    settings.DATABASES['default']['NAME'])
+    cursor = connection.cursor()
+    
+    # Llamar al procedimiento
+    try:
+        p_top_libros = cursor.var(cx_Oracle.CURSOR)
+        cursor.callproc('obtener_top_libros_mejor_calificados', [p_top_libros])
+        
+        # Recuperar los resultados
+        top_libros = p_top_libros.getvalue().fetchall()
+
+        # Convertir a lista de diccionarios
+        resultados = []
+        for libro in top_libros:
+            resultados.append({
+                'id_libro': libro[0],              
+                'promedio_calificacion': libro[1], 
+                'total_resenas': libro[2]          
+            })
+    finally:
+        cursor.close()
+        connection.close()
+    
+    return resultados
