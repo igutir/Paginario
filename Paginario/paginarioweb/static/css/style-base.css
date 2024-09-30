@@ -246,7 +246,7 @@ body {
 .user-avatar {
     width: 50px;
     height: 50px;
-    background-color: #cfd6e3;
+    /* background-color: #cfd6e3; */
     border-radius: 50%;
     margin-right: 20px;
 }
@@ -281,6 +281,7 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    margin-top: 1rem;
 }
 
 .add-review-btn {
@@ -340,7 +341,7 @@ body {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: #ccc;
+    /* background-color: #ccc; */
     margin-right: 15px;
 }
 

@@ -85,7 +85,7 @@
 
 
     <div class="reviews-header">
-        <h2>RESEÑAS</h2>
+        <h4>Reseñas</h4>
         <!-- Botón de agregar reseña -->
         <button class="add-review-btn" onclick="toggleReviewForm()">
             <i class="fas fa-plus"></i>
@@ -97,8 +97,8 @@
         {% csrf_token %}
         <div class="review-form" id="reviewForm" style="display: none;">
             <textarea name="textoReseña" id="reviewText" placeholder="Escribe tu reseña aquí..."></textarea>
-            <button type="submit"> Embiar </button>
-            <button type="submit" class="btn btn-primary" onclick="addReview()">Agregar Reseña</button>
+            <button type="submit" class="btn btn-primary"> Enviar </button>
+            <!-- <button type="submit" class="btn btn-primary" onclick="addReview()">Agregar Reseña</button> -->
         </div>
     </from>
 
@@ -109,7 +109,7 @@
             {% for usuario_libro in libro.usuario_libro_set.all %}
                 {% if usuario_libro.resenia %}
                 <div class="review">
-                    <div class="user-avatar"></div>
+                    <div class="user-avatar"> <i class="bi bi-person-circle" style="font-size: 2.5rem;"></i></div>
                     <div class="review-content">
                         <p class="review-author">{{ usuario_libro.id_usuario.nombre }}</p> <!-- Nombre del usuario -->
                         <p class="review-text">{{ usuario_libro.resenia }}</p> <!-- Reseña -->
