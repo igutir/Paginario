@@ -573,7 +573,7 @@ def obtener_usuarios_mes(request):
     usuarios = [{'id': row[0], 'nombre': row[1], 'email': row[2], 'fecha_registro': row[3], 'user_id': row[4]} for row in rows]
 
     current_year = datetime.datetime.now().year
-    years = list(range(current_year - 10, current_year + 1))
+    years = list(range(current_year - 2, current_year + 1))
 
     return render(request, 'usuarios_mes.html', {'usuarios': usuarios, 'years': years})
 

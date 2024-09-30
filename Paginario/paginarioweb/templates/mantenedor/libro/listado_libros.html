@@ -20,7 +20,7 @@ function eliminarLibro(id){
 }
 </script>
 
-<div class="d-flex justify-content-center m-4 ps-4">
+<div class="d-flex justify-content-center m-4 ps-4" style="color: rgb(24, 36, 100);" >
     <h1>
         Libros registrados
     </h1>
@@ -49,8 +49,10 @@ function eliminarLibro(id){
                 <td>{{ libro.anio }}</td>
                 <td>{{ libro.id_editorial.nombre }}</td>
                 <td>{{ libro.id_autor.nombre }}</td>
-                <td align="center"><a href="{% url 'modificar_libro' idlibro=libro.id %}" class="btn btn-warning">M</a></td>
-                <td align="center"><a href="{% url 'eliminar_libro' idlibro=libro.id %}" class="btn btn-danger">E</a></td>
+                <td align="center"><a href="{% url 'modificar_libro' idlibro=libro.id %}" class="btn btn-warning"><i class="fas fa-pencil-alt"></i>
+                </a></td>
+                <td align="center"><a href="{% url 'eliminar_libro' idlibro=libro.id %}" class="btn btn-danger"><i class="fas fa-trash-alt"></i>
+                </a></td>
             </tr>
             {% endfor %}
         </tbody>

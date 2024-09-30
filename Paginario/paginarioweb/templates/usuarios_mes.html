@@ -1,55 +1,97 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Usuarios Registrados por Mes y Año</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PaginarioApp</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- <link rel="stylesheet" href="{% static '/css/style-base.css' %}"> -->
 </head>
-<body>
-    <h1>Usuarios Registrados por Mes y Año</h1>
 
-    <form method="GET">
-        <label for="mes">Selecciona el mes:</label>
-        <select name="mes" id="mes">
-            <option value="1">Enero</option>
-            <option value="2">Febrero</option>
-            <option value="3">Marzo</option>
-            <option value="4">Abril</option>
-            <option value="5">Mayo</option>
-            <option value="6">Junio</option>
-            <option value="7">Julio</option>
-            <option value="8">Agosto</option>
-            <option value="9">Septiembre</option>
-            <option value="10">Octubre</option>
-            <option value="11">Noviembre</option>
-            <option value="12">Diciembre</option>
-        </select>
+<body class="bg-light-gray">
 
-        <label for="ano">Selecciona el año:</label>
-        <select name="ano" id="ano">
-            {% for year in years %}
-                <option value="{{ year }}">{{ year }}</option>
-            {% endfor %}
-        </select>
 
-        <button type="submit">Buscar</button>
-    </form>
+    <h1 class="m-5" style="text-align: center;">Usuarios Registrados por Mes y Año</h1>
 
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Fecha de Registro</th>
-            <th>User ID</th>
-        </tr>
-        {% for usuario in usuarios %}
-        <tr>
-            <td>{{ usuario.id }}</td>
-            <td>{{ usuario.nombre }}</td>
-            <td>{{ usuario.email }}</td>
-            <td>{{ usuario.fecha_registro }}</td>
-            <td>{{ usuario.user_id }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    
+    <div class="container">
+        <div class="row">
+            <div class="colsm-12 col-md-12 col-lg-12 col-xl-12">
+                <div class="table-responsive">
+
+                    <form class="d-flex align-items-center justify-content-center" method="GET">
+                        <label for="mes">Selecciona el mes:</label>
+                        <select class="form-select w-auto mx-2 " name="mes" id="mes">
+                            <option value="1">Enero</option>
+                            <option value="2">Febrero</option>
+                            <option value="3">Marzo</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Mayo</option>
+                            <option value="6">Junio</option>
+                            <option value="7">Julio</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Septiembre</option>
+                            <option value="10">Octubre</option>
+                            <option value="11">Noviembre</option>
+                            <option value="12">Diciembre</option>
+                        </select>
+                
+                        <label for="ano">Selecciona el año: </label>
+                        <select class="form-select w-auto mx-2" name="ano" id="ano">
+                            {% for year in years %}
+                                <option value="{{ year }}">{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                
+                        <button class="btn btn-primary" type="submit">Buscar</button>
+                    </form></br>
+                
+                    <table id="datatable-programmers" class="table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Fecha de Registro</th>
+                            <th>User ID</th>
+                        </tr>
+                        {% for usuario in usuarios %}
+                        <tr>
+                            <td>{{ usuario.id }}</td>
+                            <td>{{ usuario.nombre }}</td>
+                            <td>{{ usuario.email }}</td>
+                            <td>{{ usuario.fecha_registro }}</td>
+                            <td>{{ usuario.user_id }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
+
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/2.1.7/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.1.7/js/dataTables.bootstrap5.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css"></script>
+    <script src="https://cdn.datatables.net/2.1.7/css/dataTables.bootstrap5.css"></script>
+
+    <script src="{% static '/js/script.js' %}"></script>
+    
 </body>
+
 </html>
+

@@ -4,18 +4,18 @@
 
 {% block contenido %}
 
-<div class="d-flex justify-content-center m-4 ps-4">
+<div class="d-flex justify-content-center m-4 ps-4" style="color: rgb(24, 36, 100);">
     <h1>
         Agregar Libro
     </h1>
 </div>
 
 <div class = "d-flex justify-content-center">
-    <div class = "row">
+    <div class = "row" style="width: 650px;">
         <form class = "col-12 col-sm-12 col-lg-12" id = "agregarLibro" action = "" method = "POST" enctype = "multipart/form-data">
             {% csrf_token %}
             {{form_libro | crispy}}
-            <hr class="my-4">
+
             <div class="d-flex justify-content-center">
                 <button type="submit" class="btn btn-primary m-2">Agregar libro</button>
                 <button type="reset" class="btn btn-danger m-2">Limpiar campos</button>
