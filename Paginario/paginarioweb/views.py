@@ -198,8 +198,10 @@ def agregar_reseña(request, id_libro):
 # Obtener reseña del usuario actual
 def obtener_reseña_usuario(id_libro, id_usuario):
 
+
     try:
         reseña = get_object_or_404(Usuario_Libro, id_libro=id_libro, id_usuario=id_usuario).resenia
+        
 
     except Http404:
 
@@ -211,9 +213,11 @@ def obtener_reseña_usuario(id_libro, id_usuario):
 def obtener_reseñas(request, id_libro):
 
     reseñas = Usuario_Libro.objects.filter(id_libro=id_libro).values_list('resenia', flat=True).order_by('-id')
+    conteo_resenias = reseñas.filter(resenia__isnull=False).count()
 
     data = {
-        'resenias' : reseñas
+        'resenias' : reseñas,
+        'conteo_resenias': conteo_resenias,
     }
 
     return render(request, "mantenedor/libro/listado_libros.html", data)

@@ -15,14 +15,34 @@
                 <span class="category">Categoría</span>
             </div>
 
-                <!-- Calificación con estrellas -->
-                <div class="rating">
-                    <i><a class="far fa-star" id="star1" onclick="rateBook('{{ libro.id }}', '1')"></a></i>
-                    <i><a class="far fa-star" id="star2" onclick="rateBook('{{ libro.id }}', '2')"></a></i>
-                    <i><a class="far fa-star" id="star3" onclick="rateBook('{{ libro.id }}', '3')"></a></i>
-                    <i><a class="far fa-star" id="star4" onclick="rateBook('{{ libro.id }}', '4')"></a></i>
-                    <i><a class="far fa-star" id="star5" onclick="rateBook('{{ libro.id }}', '5')"></a></i>
-                </div>
+
+                    {% with user_rating=0 %}
+                    {% for usuario_libro in libro.usuario_libro_set.all %}
+                        {% if usuario_libro.id_usuario_id == request.user.id %}
+                            {% with user_rating=usuario_libro.calificacion %}
+
+                                <!-- Calificación con estrellas -->
+                                <div class="rating" data-user-rating="{{ user_rating }}" data-libro-id="{{ libro.id }}">
+                                    <i><a class="far fa-star" id="star1" onclick="rateBook('{{ libro.id }}', '1')"></a></i>
+                                    <i><a class="far fa-star" id="star2" onclick="rateBook('{{ libro.id }}', '2')"></a></i>
+                                    <i><a class="far fa-star" id="star3" onclick="rateBook('{{ libro.id }}', '3')"></a></i>
+                                    <i><a class="far fa-star" id="star4" onclick="rateBook('{{ libro.id }}', '4')"></a></i>
+                                    <i><a class="far fa-star" id="star5" onclick="rateBook('{{ libro.id }}', '5')"></a></i>
+
+                                </div>          
+                                
+            
+                                <!-- Si hay calificación, no mostrar mensaje -->
+                                {% if user_rating == 0 %}
+                                    <p>No has calificado este libro aún.</p>
+                                {% endif %}
+            
+                            {% endwith %}
+                        {% endif %}
+                    {% endfor %}
+                {% endwith %}
+
+            
 
             <p class="isbn">ISBN 9789564085937</p>
             <div class="book-icons">
@@ -54,12 +74,6 @@
 
 
 
-        <!-- <div class="book-description">
-            <p>Breve descripción del libro</p>
-            <p>{{ libro.descripcion }}</p>
-        </div> -->
-
-
         <div class="book-description">
             <p>Breve descripción del libro</p>
             <p id="descripcion">
@@ -69,16 +83,6 @@
         </div>
     </div>
 
-    <!-- <div class="reviews">
-        <h2>RESEÑAS</h2>
-        <div class="review">
-            <div class="user-avatar"></div>
-            <div class="review-content">
-                <p class="review-author">NOMBRE</p>
-                <p class="review-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sagittis, justo ac consequat feugiat, ipsum nisi porttitor dolor...</p>
-            </div>
-        </div>
-    </div> -->
 
     <div class="reviews-header">
         <h2>RESEÑAS</h2>
@@ -100,17 +104,70 @@
 
     <div class="review-list">
         <!-- Aquí se listarán las reseñas existentes -->
-        <div class="review">
-            <div class="user-avatar"></div>
-            <div class="review-content">
-                <p class="review-author">NOMBRE</p>
-                <p class="review-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sagittis, justo ac consequat feugiat, ipsum nisi porttitor dolor...</p>
-            </div>
-        </div>
+        {% if libro.usuario_libro_set.count > 0 %}
+        
+            {% for usuario_libro in libro.usuario_libro_set.all %}
+                {% if usuario_libro.resenia %}
+                <div class="review">
+                    <div class="user-avatar"></div>
+                    <div class="review-content">
+                        <p class="review-author">{{ usuario_libro.id_usuario.nombre }}</p> <!-- Nombre del usuario -->
+                        <p class="review-text">{{ usuario_libro.resenia }}</p> <!-- Reseña -->
+                    </div>
+                </div>
+                {% endif %}
+                
+            {% endfor %}
+        {% else %}
+            <p>No hay reseñas aún.</p>
+        {% endif %}
     </div>
 </div>
 
 <script>
+
+// Función para pintar las estrellas
+function pintarEstrellas(userRating, id_libro) {
+
+    for (let i = 1; i <= 5; i++) {
+        const star = document.getElementById('star' + i);
+        if (i <= userRating) {
+            star.classList.remove('far');
+            star.classList.add('fas');
+        } else {
+            star.classList.remove('fas');
+            star.classList.add('far');
+        }
+    }
+}
+
+    // Función para manejar las estrellas de calificación
+    function rateBook(id_libro, userRating) {
+        for (let i = 1; i <= 5; i++) {
+            const star = document.getElementById('star' + i);
+            if (i <= userRating) {
+                star.classList.remove('far');
+                star.classList.add('fas');
+            } else {
+                star.classList.remove('fas');
+                star.classList.add('far');
+            }
+        }
+        // Aquí puedes agregar la lógica de guardado de calificación
+        window.location.href = id_libro+"/rat/"+userRating+"/";
+    }
+
+
+// Llama a esta función al cargar la página para inicializar las estrellas
+document.addEventListener("DOMContentLoaded", function() {
+    const ratingElement = document.querySelector('.rating');
+    const userRating = parseInt(ratingElement.getAttribute('data-user-rating')); // Obtener el valor de user_rating
+    const id_libro = ratingElement.getAttribute('data-libro-id'); // Obtener el ID del libro
+    pintarEstrellas(userRating, id_libro);
+
+});
+
+
     function toggleFavorite(icon) {
         if (icon.classList.contains('active')) {
             icon.classList.remove('active');
@@ -138,22 +195,7 @@
         window.location.href = id_libro+"/"+estado+"/";
     }
 
-    // Función para manejar las estrellas de calificación
-    function rateBook(id_libro, rating) {
-        for (let i = 1; i <= 5; i++) {
-            const star = document.getElementById('star' + i);
-            if (i <= rating) {
-                star.classList.remove('far');
-                star.classList.add('fas');
-            } else {
-                star.classList.remove('fas');
-                star.classList.add('far');
-            }
-        }
-        console.log("Calificación del libro: " + rating);
-        // Aquí puedes agregar la lógica de guardado de calificación
-        window.location.href = id_libro+"/rat/"+rating+"/";
-    }
+
 
     // Función para el botón "Leer más"
     function toggleDescription() {
@@ -207,6 +249,10 @@ function addReview() {
     } else {
         alert("Por favor escribe una reseña antes de agregar.");
     }
+
+   
+
+
 }
 </script>
 
