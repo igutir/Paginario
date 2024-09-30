@@ -89,11 +89,14 @@
     </div>
 
     <!-- Formulario para agregar reseña (oculto inicialmente) -->
-
-    <div class="review-form" id="reviewForm" style="display: none;">
-        <textarea name="textoReseña" id="reviewText" placeholder="Escribe tu reseña aquí..."></textarea>
-        <a type=button class="btn btn-primary" onclick="addReview('{{ libro.id }}')">Agregar Reseña</a>
-    </div>
+    <form method="POST" action="{% url 'agregar_reseña' libro.id %}">
+        {% csrf_token %}
+        <div class="review-form" id="reviewForm" style="display: none;">
+            <textarea name="textoReseña" id="reviewText" placeholder="Escribe tu reseña aquí..."></textarea>
+            <button type="submit"> Embiar </button>
+            <button type="submit" class="btn btn-primary" onclick="addReview()">Agregar Reseña</button>
+        </div>
+    </from>
 
     <div class="review-list">
         <!-- Aquí se listarán las reseñas existentes -->
@@ -179,13 +182,11 @@
 }
 
 // Función para agregar una reseña
-function addReview(id_libro) {
+function addReview() {
     var reviewText = document.getElementById("reviewText").value;
     if (reviewText.trim() !== "") {
         // Aquí se puede implementar la lógica para enviar la reseña al servidor
         alert("Reseña agregada: " + reviewText);
-
-        window.location.href = id_libro+"/rev/"+reviewText+"/";
 
         // Actualizar la vista con la nueva reseña
         var reviewList = document.querySelector(".review-list");

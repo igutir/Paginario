@@ -6,10 +6,10 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required, permission_required
 
-from django.core.exceptions import ObjectDoesNotExist
-
 from .forms import FormularioLibro, BookSearch
 from .models import Libro, Usuario, Autor, Editorial, Lista, Estado_Libro, Usuario_Libro, Usuario_Genero_Literario
+
+from django.core.exceptions import ObjectDoesNotExist
 
 from string import Template
 
@@ -100,15 +100,20 @@ def poner_estado_libro(request, id_libro, estado):
 def obtener_estado_libro(id_libro, id_usuario):
 
     try:
+
         usuario_libro = Usuario_Libro.objects.get(id_libro=id_libro, id_usuario=id_usuario)
 
-        estado_libro = usuario_libro.id_estado_libro.nombre
-
-    except ObjectDoesNotExist:
+    except Usuario_Libro.DoesNotExist:
 
         return "None"
 
-    return estado_libro
+    if usuario_libro.id_estado_libro is None:
+
+        return "None"
+
+    else:
+
+        return usuario_libro.id_estado_libro.nombre
 
 # Agregar calificación al libro
 def poner_calificacion(request, id_libro, rating):
@@ -151,28 +156,32 @@ def obtener_calificacion_libro(id_libro, id_usuario):
 
     return calificacion
 
-# Agregar reseña al libro
-def agregar_reseña(request, id_libro, reviewText):
 
-    usuario = obtener_usuario_actual(request)
+def agregar_reseña(request, id_libro):
 
-    libro = get_object_or_404(Libro, id=id_libro)
+    if request.method == 'POST':
 
-    data = {
-            "libro": libro,
-            "mensaje": ""
-        }
+        reseña = request.POST.get('textoReseña')
 
-    usuario_libro, creado = Usuario_Libro.objects.update_or_create(
-        id_usuario=usuario,
-        id_libro=libro
-        )
+        usuario = obtener_usuario_actual(request)
 
-    usuario_libro.resenia = reviewText
+        libro = get_object_or_404(Libro, id=id_libro)
 
-    usuario_libro.save()
+        data = {
+                "libro": libro,
+                "mensaje": ""
+            }
 
-    data["mensaje"] = "La reseña ha sido añadida"
+        usuario_libro, creado = Usuario_Libro.objects.update_or_create(
+            id_usuario=usuario,
+            id_libro=libro
+            )
+
+        usuario_libro.resenia = reseña
+
+        usuario_libro.save()
+
+        data["mensaje"] = "La reseña ha sido añadida"
 
     return redirect(to = "/libro/"+id_libro)
 

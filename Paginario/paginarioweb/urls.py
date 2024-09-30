@@ -20,7 +20,7 @@ urlpatterns = [
     path('libro/<id_libro>/rat/<int:rating>/', poner_calificacion, name="poner_calificacion"),
 
     # Reseñas:
-    path('libro/<id_libro>/rev/<reviewText>/', agregar_reseña, name="agregar_reseña"),
+    path('libro/<id_libro>/rev', agregar_reseña, name="agregar_reseña"),
 
     #Listas:
     path('libro/<id_libro>/f/', agregar_favorito, name='agregar_favorito'),
