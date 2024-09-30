@@ -4,7 +4,7 @@ from django.db import IntegrityError, transaction, connection
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User, Group
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 
 from .forms import FormularioLibro, BookSearch
 from .models import Libro, Usuario, Autor, Editorial, Lista, Estado_Libro, Usuario_Libro, Usuario_Genero_Literario
@@ -23,8 +23,14 @@ env.read_env()  # reading .env file
 
 key = env.str('API_KEY')
 
+# Permiso de grupo administrador
+def user_is_admin(user):
+    if user:
+        return user.groups.filter(name='administrador').count()
+    return False
 
 # Vista principal
+@login_required
 def home(request):
 
     libros = Libro.objects.all()
@@ -46,6 +52,7 @@ def obtener_usuario_actual(request):
     return Usuario.objects.get(nombre=usuario)
 
 #Vista de para el libro según id
+@login_required(login_url = "login/")
 def vista_libro(request, id_libro):
 
     usuario = obtener_usuario_actual(request)
@@ -68,6 +75,7 @@ def vista_libro(request, id_libro):
     return render(request, "libro.html", data)
 
 # Cambio del estado del libro
+@login_required(login_url = "login/")
 def poner_estado_libro(request, id_libro, estado):
 
     usuario = obtener_usuario_actual(request)
@@ -126,6 +134,7 @@ def obtener_estado_libro(id_libro, id_usuario):
         return usuario_libro.id_estado_libro.nombre
 
 # Agregar calificación al libro
+@login_required(login_url = "login/")
 def poner_calificacion(request, id_libro, rating):
 
     usuario = obtener_usuario_actual(request)
@@ -166,7 +175,8 @@ def obtener_calificacion_libro(id_libro, id_usuario):
 
     return calificacion
 
-
+# Agrega una reseña a un libro específico
+@login_required(login_url = "login/")
 def agregar_reseña(request, id_libro):
 
     if request.method == 'POST':
@@ -201,7 +211,6 @@ def obtener_reseña_usuario(id_libro, id_usuario):
 
     try:
         reseña = get_object_or_404(Usuario_Libro, id_libro=id_libro, id_usuario=id_usuario).resenia
-        
 
     except Http404:
 
@@ -269,6 +278,7 @@ def register(request):
     return render(request, "registration/register.html")
 
 # Método para la búsqueda de libros mediante la API Google Books en la homepage
+@login_required(login_url = "login/")
 def books(request):
     search = request.GET.get('search', False)
 
@@ -324,7 +334,7 @@ def books(request):
         'next_index': next_index  # Pasar el valor para la paginación
         })
 
-
+@login_required(login_url = "login/")
 def libro(request, id):
 
     libro = get_object_or_404(Libro, id = id)
@@ -337,18 +347,16 @@ def libro(request, id):
 
 ## Mantenedor de libros:
 
-## Permisos en base a lo otorgado al perfil de administrador en el panel de administrador
-@login_required(login_url = "login/")
-@permission_required(['Paginario.add_libro', 'Paginario.delete_libro'], login_url = "login/")
+# Acceso al mantenedor de libros
+@login_required(login_url = "")
+@user_passes_test(user_is_admin, login_url="")
 def mantenedor_libros(request):
 
     return render(request, "mantenedor/libro/mantenedor_libros.html")
 
-"""
-## Permisos en base a lo otorgado al perfil de administrador en el panel de administrador
+# Agrega un libro a la base de datos ingresandolo a mano
 @login_required(login_url = "login/")
-@permission_required(['Paginario.add_libro'], login_url = "login/")
-"""
+@user_passes_test(user_is_admin, login_url="login/")
 def agregar_libro(request):
 
     data = {
@@ -367,10 +375,10 @@ def agregar_libro(request):
             data["form"] = formulario
 
     return render(request, "mantenedor/libro/agregar.html", data)
-"""
+
+# Accede a la lista de libros guardados en la base de datos para editarlos o eliminarlos
 @login_required(login_url = "login/")
-@permission_required(['Paginario.change_libro', 'Paginario.delete_libro'], login_url = "login/")
-"""
+@user_passes_test(user_is_admin, login_url="login/")
 def modificar_libro_lista(request):
 
     libros = Libro.objects.all()
@@ -381,10 +389,9 @@ def modificar_libro_lista(request):
 
     return render(request, "mantenedor/libro/listado_libros.html", data)
 
-"""
+# Modifica un libro existene en la base de datos
 @login_required(login_url = "login/")
-@permission_required(['Paginario.change_libro'], login_url = "login/")
-"""
+@user_passes_test(user_is_admin, login_url="login/")
 def modificar_libro(request, idlibro):
 
     libro = get_object_or_404(Libro, id = idlibro)
@@ -405,10 +412,9 @@ def modificar_libro(request, idlibro):
 
     return render(request, "mantenedor/libro/modificar.html", data)
 
-"""
-@login_required(login_url="login/")
-@permission_required(['Paginario.delete_libro'], login_url = "login/")
-"""
+# Elimina un libro de la base de datos
+@login_required(login_url = "login/")
+@user_passes_test(user_is_admin, login_url="login/")
 def eliminar_libro(request, idlibro):
 
     libro = get_object_or_404(Libro, id = idlibro)
@@ -418,8 +424,10 @@ def eliminar_libro(request, idlibro):
     return redirect(to = "modificar_libro_lista")
 
 
-# Metodos para poblar la BD con ayuda de la API Google Books:
 
+# Despliega una lista de libros en base a una búsqueda utilizando la API Google Books
+@login_required(login_url = "login/")
+@user_passes_test(user_is_admin, login_url="login/")
 def libros_mantenedor(request):
 
     search = request.GET.get('search', False)
@@ -469,6 +477,10 @@ def libros_mantenedor(request):
         'next_index': next_index  # Pasar el valor para la paginación
     })
 
+
+# Agrega un libro a la base de datos utilizando los datos de la API Google Books
+@login_required(login_url = "login/")
+@user_passes_test(user_is_admin, login_url="login/")
 def guardar_libro(request, id_libro):
 
     GOOGLE_BOOKS_API_URL_BY_ID = "https://www.googleapis.com/books/v1/volumes/"
@@ -522,7 +534,9 @@ def guardar_libro(request, id_libro):
 
     return render(request, "mantenedor/libro/agregar.html")
 
-## Agregar libro a la lista de favoritos
+# Agrega un libro a la lista de favoritos
+@login_required(login_url = "login/")
+@user_passes_test(user_is_admin, login_url="login/")
 def agregar_favorito(request, id_libro):
 
     user_actual = request.user
@@ -546,7 +560,9 @@ def agregar_favorito(request, id_libro):
 
     return render(request, "libro.html", data)
 
-# Reportería:
+# Obtiene el reporte desde la base de datos con los usuarios registrados por mes
+@login_required(login_url = "login/")
+@user_passes_test(user_is_admin, login_url="login/")
 def obtener_usuarios_mes(request):
     mes = request.GET.get('mes', datetime.datetime.now().month)  # Mes actual por defecto
     ano = request.GET.get('ano', datetime.datetime.now().year)  # Año actual por defecto
@@ -578,18 +594,19 @@ def obtener_usuarios_mes(request):
     return render(request, 'usuarios_mes.html', {'usuarios': usuarios, 'years': years})
 
 # Muestra el top 10 de calificaciones de los libros
+@login_required(login_url = "login/")
 def obtener_top_libros():
     # Crear un cursor y una conexión a la base de datos
     connection = cx_Oracle.connect(settings.DATABASES['default']['USER'],
                                     settings.DATABASES['default']['PASSWORD'],
                                     settings.DATABASES['default']['NAME'])
     cursor = connection.cursor()
-    
+
     # Llamar al procedimiento
     try:
         p_top_libros = cursor.var(cx_Oracle.CURSOR)
         cursor.callproc('obtener_top_libros_mejor_calificados', [p_top_libros])
-        
+
         # Recuperar los resultados
         top_libros = p_top_libros.getvalue().fetchall()
 
@@ -597,12 +614,12 @@ def obtener_top_libros():
         resultados = []
         for libro in top_libros:
             resultados.append({
-                'id_libro': libro[0],              
-                'promedio_calificacion': libro[1], 
-                'total_resenas': libro[2]          
+                'id_libro': libro[0],
+                'promedio_calificacion': libro[1],
+                'total_resenas': libro[2]
             })
     finally:
         cursor.close()
         connection.close()
-    
+
     return resultados
