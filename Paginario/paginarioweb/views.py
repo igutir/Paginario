@@ -600,9 +600,10 @@ def obtener_top_libros():
         resultados = []
         for libro in top_libros:
             resultados.append({
-                'id_libro': libro[0],              
-                'promedio_calificacion': libro[1], 
-                'total_resenas': libro[2]          
+                'nombre_libro': libro[0],
+                'nombre_autor': libro[1],
+                'promedio_calificacion': libro[2],
+                'total_resenas': libro[3]
             })
     finally:
         cursor.close()
