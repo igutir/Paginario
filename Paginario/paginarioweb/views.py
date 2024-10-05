@@ -112,6 +112,8 @@ def poner_estado_libro(request, id_libro, estado):
 
     data["mensaje"] = "Estado del libro cambiado a " + estado_libro.nombre
 
+    print(traceback.format_exc())
+
     return redirect(to = "/libro/"+id_libro)
 
 # Obtener estado del libro para mostrarlo en el front
@@ -347,9 +349,9 @@ def libro(request, id):
 
 ## Mantenedor de libros:
 
-# Acceso al mantenedor de libros
-@login_required(login_url = "")
-@user_passes_test(user_is_admin, login_url="")
+## Permisos en base a lo otorgado al perfil de administrador en el panel de administrador
+""" @login_required(login_url = "login/")
+@permission_required(['Paginario.add_libro', 'Paginario.delete_libro'], login_url = "login/") """
 def mantenedor_libros(request):
 
     return render(request, "mantenedor/libro/mantenedor_libros.html")
@@ -444,9 +446,8 @@ def libros_mantenedor(request):
         'startIndex': start_index  # Índice de inicio para la paginación
         }
 
-    print(queries)
     r = requests.get('https://www.googleapis.com/books/v1/volumes', params=queries)
-    print(r)
+
     if r.status_code != 200:
         return render(request, 'mantenedor/libro/listar_libros_api.html', {'message': 'Sorry, there seems to be an issue with Google Books right now.'})
 
@@ -469,6 +470,7 @@ def libros_mantenedor(request):
         libros.append(book_dict)
 
     total_items = data.get('totalItems', 0)
+
     next_index = start_index + 10 if start_index + 10 < total_items else None   # Calcular el índice de la próxima página
 
     return render(request, 'mantenedor/libro/listar_libros_api.html', {
@@ -483,14 +485,15 @@ def libros_mantenedor(request):
 @user_passes_test(user_is_admin, login_url="login/")
 def guardar_libro(request, id_libro):
 
-    GOOGLE_BOOKS_API_URL_BY_ID = "https://www.googleapis.com/books/v1/volumes/"
+    param = {
+        'key': key
+        }
 
-    url = f"{GOOGLE_BOOKS_API_URL_BY_ID}{id_libro}"
-
-    response = requests.get(url)
+    response = requests.get("https://www.googleapis.com/books/v1/volumes/" + id_libro, params=param)
 
     if response.status_code == 200:
         data = response.json()
+
         if "volumeInfo" in data:
             libro_info = data['volumeInfo']
 
@@ -524,15 +527,15 @@ def guardar_libro(request, id_libro):
 
                 libro.save()
 
-                print("OK")
-
                 return redirect(to="agregar_libro")
 
             except Exception as ex:
                 print("NOK")
                 print(traceback.format_exc())
+        else:
+            print("No data")
 
-    return render(request, "mantenedor/libro/agregar.html")
+    return render(request, "mantenedor/libro/listar_libros_api.html")
 
 # Agrega un libro a la lista de favoritos
 @login_required(login_url = "login/")
