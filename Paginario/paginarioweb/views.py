@@ -550,16 +550,13 @@ def agregar_favorito(request, id_libro):
     return redirect(to = "/libro/"+id_libro)
 
 # Reportería:
-import datetime
-from django.db import connection
-from django.shortcuts import render
 
 def obtener_usuarios_mes(request):
-    # Obtener mes y año desde los parámetros GET, o utilizar mes y año actuales por defecto
+   
     mes = request.GET.get('mes')
     ano = request.GET.get('ano')
 
-    # Si mes o año no están presentes o no son válidos, usar el mes y año actuales
+   
     try:
         mes = int(mes) if mes else datetime.datetime.now().month
         ano = int(ano) if ano else datetime.datetime.now().year
@@ -567,7 +564,7 @@ def obtener_usuarios_mes(request):
         mes = datetime.datetime.now().month
         ano = datetime.datetime.now().year
 
-    # Ejecutar la consulta SQL con los parámetros obtenidos
+    
     with connection.cursor() as cursor:
         cursor.execute("""
             SELECT ID, NOMBRE, EMAIL, TO_CHAR(FECHA_REGISTRO, 'DD/MM/YYYY'), USER_ID
@@ -577,14 +574,14 @@ def obtener_usuarios_mes(request):
         """, [ano, mes])
         rows = cursor.fetchall()
 
-    # Formatear los resultados
+    
     usuarios = [{'id': row[0], 'nombre': row[1], 'email': row[2], 'fecha_registro': row[3], 'user_id': row[4]} for row in rows]
 
-    # Obtener el año actual y generar una lista de los últimos 2 años y el actual
+  
     current_year = datetime.datetime.now().year
     years = list(range(current_year - 2, current_year + 1))
 
-    # Pasar los datos al template
+    
     return render(request, 'usuarios_mes.html', {'usuarios': usuarios, 'years': years, 'selected_mes': mes, 'selected_ano': ano})
 
 
