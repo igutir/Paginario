@@ -547,7 +547,7 @@ def agregar_favorito(request, id_libro):
     else:
         data["mensaje"] = "Este libro ya existe en tu lista de favoritos"
 
-    return render(request, "libro.html", data)
+    return redirect(to = "/libro/"+id_libro)
 
 # Reportería:
 def obtener_usuarios_mes(request):
