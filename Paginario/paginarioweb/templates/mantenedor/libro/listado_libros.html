@@ -12,8 +12,9 @@ function eliminarLibro(id){
         "showCancelButton": true,
         "cancelButtonText": "No, cancelar",
         "confirmButtonText": "Si, eliminar"
-    }).then(function(result){
+    }).then((result) => {
         if(result.isConfirmed){
+            Swal.fire("Libro eliminado!", "", "success");
             window.location.href = "d/" + id + "/";
         }
     })
@@ -51,7 +52,7 @@ function eliminarLibro(id){
                 <td>{{ libro.id_autor.nombre }}</td>
                 <td align="center"><a href="{% url 'modificar_libro' idlibro=libro.id %}" class="btn btn-warning"><i class="fas fa-pencil-alt"></i>
                 </a></td>
-                <td align="center"><a href="{% url 'eliminar_libro' idlibro=libro.id %}" class="btn btn-danger"><i class="fas fa-trash-alt"></i>
+                <td align="center"><a href="#" onclick="eliminarLibro('{{ libro.id }}')" class="btn btn-danger"><i class="fas fa-trash-alt"></i>
                 </a></td>
             </tr>
             {% endfor %}

@@ -16,7 +16,8 @@
             </div>
 
 
-                    {% with user_rating=0 %}
+                {% comment %} 
+                {% with user_rating=0 %}
                     {% for usuario_libro in libro.usuario_libro_set.all %}
                         {% if usuario_libro.id_usuario_id == request.user.id %}
                             {% with user_rating=usuario_libro.calificacion %}
@@ -29,25 +30,39 @@
                                     <i><a class="far fa-star" id="star4" onclick="rateBook('{{ libro.id }}', '4')"></a></i>
                                     <i><a class="far fa-star" id="star5" onclick="rateBook('{{ libro.id }}', '5')"></a></i>
 
-                                </div>          
-                                
-            
+                                </div>
+
                                 <!-- Si hay calificación, no mostrar mensaje -->
                                 {% if user_rating == 0 %}
                                     <p>No has calificado este libro aún.</p>
                                 {% endif %}
-            
                             {% endwith %}
                         {% endif %}
                     {% endfor %}
                 {% endwith %}
+                {% endcomment %}
 
-            
+                {% with user_rating=calificacion %}
+
+                    <!-- Calificación con estrellas -->
+                    <div class="rating" data-user-rating="{{ user_rating }}" data-libro-id="{{ libro.id }}">
+                        <i><a class="far fa-star" id="star1" onclick="rateBook('{{ libro.id }}', '1')"></a></i>
+                        <i><a class="far fa-star" id="star2" onclick="rateBook('{{ libro.id }}', '2')"></a></i>
+                        <i><a class="far fa-star" id="star3" onclick="rateBook('{{ libro.id }}', '3')"></a></i>
+                        <i><a class="far fa-star" id="star4" onclick="rateBook('{{ libro.id }}', '4')"></a></i>
+                        <i><a class="far fa-star" id="star5" onclick="rateBook('{{ libro.id }}', '5')"></a></i>
+
+                    </div>
+
+                    <!-- Si hay calificación, no mostrar mensaje -->
+                    {% if calificacion == 0 %}
+                        <p>No has calificado este libro aún.</p>
+                    {% endif %}
+                {% endwith %}
 
             <p class="isbn">ISBN 9789564085937</p>
             <div class="book-icons">
                 <a href="{% url 'agregar_favorito' libro.id %}"> <i class="fas fa-heart icon"></i></a>
-
 
                 <!-- Dropdown de Bootstrap con íconos -->
                 <div class="dropdown d-inline">
@@ -71,8 +86,6 @@
                 <i class="fas fa-list icon"></i>
             </div>
         </div>
-
-
 
         <div class="book-description">
             <p>Breve descripción del libro</p>
@@ -105,7 +118,7 @@
     <div class="review-list">
         <!-- Aquí se listarán las reseñas existentes -->
         {% if libro.usuario_libro_set.count > 0 %}
-        
+
             {% for usuario_libro in libro.usuario_libro_set.all %}
                 {% if usuario_libro.resenia %}
                 <div class="review">
@@ -116,7 +129,7 @@
                     </div>
                 </div>
                 {% endif %}
-                
+
             {% endfor %}
         {% else %}
             <p>No hay reseñas aún.</p>
