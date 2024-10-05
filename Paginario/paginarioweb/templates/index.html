@@ -1,11 +1,11 @@
-{% extends "base.html" %}
+ {% extends "base.html" %}
 {% block contenido %}
 
 <ul class="grid">
 
     <div class="container my-4">
         <div class="row">
-            <h3 style="margin-bottom: 2rem;">Agregados Recientemente</h3> 
+            <h3 style="margin-bottom: 2rem;">Agregados Recientemente</h3>
             {% for libro in libros %}
             <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
                 <div class="card h-100" style="border:0;">
@@ -23,6 +23,7 @@
             {% endfor %}
         </div>
     </div>
+
 </ul>
 <!-- Nueva sección: Tabla de libros -->
 <div class="container my-4">
@@ -30,8 +31,8 @@
     <table class="table table-striped table-bordered">
         <thead class="table-dark">
             <tr>
-                <th>Nombre del libro</th>  
-                <th>Autor</th>  
+                <th>Nombre del libro</th>
+                <th>Autor</th>
                 <th>Promedio calificación</th>
                 <th>Total de reseñas</th>
             </tr>
@@ -39,14 +40,14 @@
         <tbody>
             {% for libro in top_libros %}
             <tr>
-                <td>{{ libro.nombre_libro }}</td> 
-                <td>{{ libro.nombre_autor }}</td>  
+                <td>{{ libro.nombre_libro }}</td>
+                <td>{{ libro.nombre_autor }}</td>
                 <td>{{ libro.promedio_calificacion }}</td>
                 <td>{{ libro.total_resenas }}</td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="4">No hay libros disponibles.</td>  
+                <td colspan="4">No hay libros disponibles.</td>
             </tr>
             {% endfor %}
         </tbody>

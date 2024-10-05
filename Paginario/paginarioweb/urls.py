@@ -29,7 +29,7 @@ urlpatterns = [
     path('usuarios-mes/', obtener_usuarios_mes, name='obtener_usuarios_mes'),
 
     # Mantenedor de Administradores:
-    path('j/<int:id>/', libro, name="libro"),
+
     path('mantenedor/', mantenedor_libros, name="mantenedor_libros"),
     path('mantenedor/agregar_libro/', agregar_libro, name="agregar_libro"),
     path('mantenedor/agregar_libro/listar_libros_api/', libros_mantenedor, name="libros_mantenedor"),

@@ -4,52 +4,52 @@
 
 {% block contenido %}
 
-            <h1 class="m-5" style="color: rgb(24, 36, 100); text-align: center;">Lista libros Google API Books</h1>
+    <h1 class="m-5" style="color: rgb(24, 36, 100); text-align: center;">Lista libros Google API Books</h1>
 
-            {% if libros %}
-            <table class="tabla-api table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">Id</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Descripción</th>
-                        <th scope="col">Año</th>
-                        <th scope="col">ID Editorial</th>
-                        <th scope="col">ID Autor</th>
-                        <th scope="col">Agregar a la BD</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for libro in libros %}
-                    <tr>
-                        <th>{{ libro.id }}</th>
-                        <td>{{ libro.nombre }}</td>
-                        <td class="text-truncate" style="max-width: 300px;">{{ libro.descripcion }}</td>
-                        <td>{{ libro.anio }}</td>
-                        <td>Otra</td>
-                        <td>{{ libro.autor }}</td>
-                        <td align="center"><a href="{% url 'guardar_libro' id_libro=libro.id %}" class="btn btn-success">+</a></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    {% if libros %}
+    <table class="tabla-api table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Descripción</th>
+                <th scope="col">Año</th>
+                <th scope="col">ID Editorial</th>
+                <th scope="col">ID Autor</th>
+                <th scope="col">Agregar a la BD</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for libro in libros %}
+            <tr>
+                <th>{{ libro.id }}</th>
+                <td>{{ libro.nombre }}</td>
+                <td class="text-truncate" style="max-width: 300px;">{{ libro.descripcion }}</td>
+                <td>{{ libro.anio }}</td>
+                <td>Otra</td>
+                <td>{{ libro.autor }}</td>
+                <td align="center"><a href="{% url 'guardar_libro' id_libro=libro.id %}" class="btn btn-success">+</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-                {% if next_index %}
+        {% if next_index %}
 
-                <div class="text-center my-4">
-                    <a href="?search={{ search }}&start={{ next_index }}" class="btn btn-primary">Cargar más</a>
-                    <a href="{% url 'agregar_libro' %}" class="btn btn-primary m-4" style="max-width: 100px;">Volver</a>
-                </div>
-                {% endif %}
+        <div class="text-center my-4">
+            <a href="?search={{ search }}&start={{ next_index }}" class="btn btn-primary">Cargar más</a>
+            <a href="{% url 'agregar_libro' %}" class="btn btn-primary m-4" style="max-width: 100px;">Volver</a>
+        </div>
+        {% endif %}
 
-            {% else %}
-            <div class="error">
-                <h2>
-                    {{ message }}
-                </h2>
-                <a href="/">Search again</a>
-            </div>
+    {% else %}
+    <div class="error">
+        <h2>
+            {{ message }}
+        </h2>
+        <a href="/">Search again</a>
+    </div>
 
-            {% endif %}
+    {% endif %}
 
-            {% endblock %}           
+{% endblock %}
